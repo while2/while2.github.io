@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Edit Distance From Leetcode</title>
+    
+    <meta name="author" content="He Yi">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.2.2.2.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+    <script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container-narrow">
+          <a class="brand" href="/">while(2) {</a>
+          <ul class="nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-narrow">
+
+      <div class="content">
+        
+<div class="page-header">
+  <h1>Edit Distance From Leetcode </h1>
+</div>
+
+<div class="row-fluid post-full">
+  <div class="span12">
+    <div class="date">
+      <span>06 May 2014</span>
+    </div>
+    <div class="content">
+      <p><a href="http://oj.leetcode.com/problems/edit-distance/">LeetCode上一个题</a>: 求两个字符串之间的编辑距离，意思是通过单个字母的添加/删除/替换操作，把一个字符串word1变成另一个字符串word2，求最小操作次数。</p>
+
+<p>用DP来解，把问题分解为求word1的某个子串和word2的某个子串之间的距离。维持一个二维数组dist，dist[i][j]保存的是word1[0, i)到word2[0, j)的距离，也就是两个从头开始，长度分别为i和j的子串。之后分三种情况考虑：</p>
+
+<p>1）替换，替换最简单，首先知道了dist[i-1][j-1]的值，也就是word1[0, i-1)到word2[0, j-1)的距离，再看word1[i-1]和word2[j-1]是否相等（前面两个子串不包含i-1和j-1位），如果不相等就+1，表示一次替换操作。</p>
+
+<p>2）添加，通过添加一个字母把word1[0, i)变成word2[0, j)，那之前的子问题一定是把word[0, i)变成了word2[0, j-1)。word1已经用了i个，word2只用了j-1个，添加一个正好j个。因此这种情况下距离d_add=dist[i][j-1]+1.</p>
+
+<p>3）删除，通过删除一个字母把word1[0, i)变成word2[0, j)，删除的字母就是当前的word1[i]，因此子问题就是把word1[0, i-1)变成word2[0, j)，解放在dist[i-1][j]。这种情况下距离d_del=dist[i-1][j]+1.</p>
+
+<p>递推公式：
+\[
+Dist(i, j)=min{Dist(i-1,j-1)+ \sigma(i-1,j-1), Dist(i-1,j)+1, Dist(i,j-1)+1}
+\]
+其中\(\sigma\)判断第i,j位置字母是否相等，是返回0否则返回1。
+三种情况分别查看当前元素左上方，上方和左方，计算之后取最小值就可以了。第一行和第一列比较特别，第一行dist[0][j]表示把一个空串变成一个长度j的串，需要j次添加。第一列dist[i][0]表示把一个长i的串变成空串，需要i次删除。最后结果就是矩阵右下角就是最终结果。</p>
+
+<p>然后发现，二维数组是不必要的，每次更新只和上一行有关，所以开出两行来就足够了。每次利用上一行的信息更新下一行，然后swap。由于全部做完之后有一次swap，所以最终结果存放在row1的最后一个元素。</p>
+
+<pre><code class="language-cpp">int minDistance(string word1, string word2) { 
+    vector&lt;int&gt; row1(word2.size()+1), row2(word2.size()+1); 
+    for (int i = 0; i &lt;= word2.size(); ++i) { 
+        row1[i] = i; 
+    } 
+    for (int i = 1; i &lt;= word1.size(); ++i) { 
+        row2[0] = i; 
+        for (int j = 1; j &lt;= word2.size(); ++j) { 
+            int d_rep = row1[j-1] + (word1[i-1] != word2[j-1] ? 1 : 0); 
+            int d_add = row2[j-1] + 1; 
+            int d_del = row1[j] + 1; 
+            row2[j] = min(min(d_rep, d_add), d_del); 
+        } 
+        swap(row1, row2); 
+    } 
+    return row1.back();
+}
+</code></pre>
+
+    </div>
+
+    
+
+    
+
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev disabled"><a>&larr; Previous</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/single-number-II-from-leetcode" title="Signel Number II from Leetcode">Next &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+  </div>
+</div>
+
+
+      </div>
+      <hr>
+      <footer>
+        <p>&copy; 2014 He Yi
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

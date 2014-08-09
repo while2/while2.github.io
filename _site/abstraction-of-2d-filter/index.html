@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Abstraction of 2d Filter</title>
+    
+    <meta name="author" content="He Yi">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.2.2.2.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+    <script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container-narrow">
+          <a class="brand" href="/">while(2) {</a>
+          <ul class="nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-narrow">
+
+      <div class="content">
+        
+<div class="page-header">
+  <h1>Abstraction of 2d Filter </h1>
+</div>
+
+<div class="row-fluid post-full">
+  <div class="span12">
+    <div class="date">
+      <span>21 July 2014</span>
+    </div>
+    <div class="content">
+      <p>With the convenience of <a href="http://while2.github.io/abstraction-of-iterations.html">abstraction of iterations</a>, I felt necessary abstract filter with similar technics.</p>
+
+<p>Recently in my program I need to apply different non-linear filters to my images, which leads to terrible iterations like:</p>
+
+<pre><code class="language-cpp">for (int y = 0; y &lt; image.rows(); ++y)
+{
+	for (int x = 0; x &lt; image.cols(); ++x)
+	{
+		int top = MAX(0, y - size);
+		int bottom = MIN(y + size + 1, image.rows());
+		int left = MAX(0, x - size);
+		int right = MIN(x + size + 1, image.cols());
+
+		for (int iy = top; iy &lt; bottom; ++iy)
+		{
+			for (int ix = left; ix &lt; right; ++ix)
+			{
+				// ...
+			}
+		}
+	}
+}
+</code></pre>
+
+<p>I’d like to put them in a function so I can focus on the filter process without typing these regular code again and again.</p>
+
+<p>Filter is a kind of image transformation where each output pixel depends on a local region of pixels(typically a weighted sum) from the input image. So usually we need two steps, <strong>accumulation</strong> and <strong>evaluation</strong>.</p>
+
+<p><strong>Accmulation</strong> computes over all the neighboring pixels and generates some intermediate results. <strong>Evaluation</strong> transorm these intermediate results to the output pixels.</p>
+
+<p>So a straightforward Filter function comes like this:</p>
+
+<pre><code class="language-cpp">template&lt;class Mat1, class Mat2, class Mat3, class AccmFunc, class EvalFunc&gt;
+void filter(Mat1 &amp;src, Mat2 &amp;dst, Mat3 &amp;kernel, AccmFunc accm, EvalFunc eval)
+{
+	CHECK_TYPE(Mat1);
+	CHECK_TYPE(Mat2);
+	CHECK_TYPE(Mat3);
+
+	assert(src.rows() == dst.rows() &amp;&amp; src.cols() == dst.cols());
+	for (int y = 0; y &lt; src.rows(); ++y)
+	{
+		for (int x = 0; x &lt; src.cols(); ++x)
+		{
+			int x0 = max(x - kernel.cols() / 2, 0);
+			int x1 = min(x + kernel.cols() / 2 + 1, src.cols());
+			int y0 = max(y - kernel.rows() / 2, 0);
+			int y1 = min(y + kernel.rows() / 2 + 1, src.rows());
+			for (int dy = y0; dy &lt; y1; ++dy)
+				for (int dx = x0; dx &lt; x1; ++dx)
+					accm(src(dy, dx), kernel(dy - y + kernel.rows()/2, dx - x + kernel.cols()/2));
+			
+			eval(dst(y, x));
+		}
+	}
+}
+</code></pre>
+
+<p>With which a gaussian blur appears like:</p>
+
+<p>~~~ c++
+float sum_rgb[3] = {0, 0, 0}, sum_w = 0;
+his::filter(input_image, output_image, kernel,
+	<a href="const Pixel &amp;pixel, float w">&amp;</a>
+{
+	for (int c = 0; c &lt; 3; ++c)
+		sum_rgb[c] += pixel.rgb[c] * w;
+	sum_w += w;
+},
+	<a href="Pixel &amp;dst">&amp;</a>
+{
+	for (int c = 0; c &lt; 3; ++c)
+	{
+		dst.rgb[c] = sum_rgb[c] / sum_w;
+		sum_rgb[c] = 0;
+	}
+	sum_w = 0;
+});
+~~~</p>
+
+<p>where <code>input_image</code> and <code>output_image</code> are two images, <code>kernel</code> is a gaussian kernel of the type <code>his::Matrix&lt;float&gt;</code>. Following are two lambda expressions define the process of <strong>Accumulation</strong> and <strong>Evaluation</strong> respectively. <strong>Accumulation</strong> sums the color values and the weights, while <strong>Evaluation</strong> computes the output pixel color based on the weighted sum. A full sample can be viewed at <a href="https://github.com/while2/his/blob/master/sample.cpp">Github</a>.</p>
+
+<p>The trick is to use lambda expression to capture intermediate variables(the sum of rgb color and the sum of weights in above example). In such a way <strong>Accumulation</strong> and <strong>Evaluation</strong> can share informations to finish the work together.</p>
+
+<p>A <a href="https://github.com/while2/his/blob/master/Filter.hpp">more sophisticated implementation</a> removes unnecessary boundary checks at the central part of the image.</p>
+
+<p>With two lambda expressions, a filter, linear or non-linear, or even non-numerical ones, can be esaily defined. TPAMI 2014 paper ‘Stereo Matching Using Tree Filtering’ introduced a complicated ‘Tree Filter’ which builds a minimum spanning tree with local input pixels and use the distances as weights. This can be implemented by <code>filter</code> function too. </p>
+
+    </div>
+
+    
+
+    
+
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/abstraction-of-image-iterations" title="Abstraction of Image Iterations">&larr; Previous</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/numbers-from-google-code-jam" title="Numbers From Google Code Jam">Next &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+  </div>
+</div>
+
+
+      </div>
+      <hr>
+      <footer>
+        <p>&copy; 2014 He Yi
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,16 @@
+
+http://while2.github.io/archive.html
+http://while2.github.io/categories.html
+http://while2.github.io/index.html
+http://while2.github.io/pages.html
+http://while2.github.io/sitemap.txt
+http://while2.github.io/tags.html
+
+http://while2.github.io/numbers-from-google-code-jam
+http://while2.github.io/abstraction-of-2d-filter
+http://while2.github.io/abstraction-of-image-iterations
+http://while2.github.io/clip-doggy
+http://while2.github.io/semantics-the-by-cpp-template
+http://while2.github.io/bit-counting
+http://while2.github.io/single-number-II-from-leetcode
+http://while2.github.io/edit-distance-from-leetcode

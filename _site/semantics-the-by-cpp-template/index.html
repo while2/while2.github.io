@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Semantics "The" by C++ template</title>
+    
+    <meta name="author" content="He Yi">
+
+    <!-- Enable responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/themes/twitter/bootstrap/css/bootstrap.2.2.2.min.css" rel="stylesheet">
+    <link href="/assets/themes/twitter/css/style.css?body=1" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+
+    <!-- atom & rss feed -->
+    <link href="/atom.xml" type="application/atom+xml" rel="alternate" title="Sitewide ATOM Feed">
+    <link href="/rss.xml" type="application/rss+xml" rel="alternate" title="Sitewide RSS Feed">
+
+    <script type="text/javascript"
+        src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
+  </head>
+
+  <body>
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container-narrow">
+          <a class="brand" href="/">while(2) {</a>
+          <ul class="nav">
+            
+            
+            
+
+
+  
+    
+      
+      	
+      	<li><a href="/archive.html">Archive</a></li>
+      	
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/categories.html">Categories</a></li>
+      	
+      
+    
+  
+    
+  
+    
+      
+      	
+      	<li><a href="/pages.html">Pages</a></li>
+      	
+      
+    
+  
+    
+      
+    
+  
+    
+      
+      	
+      	<li><a href="/tags.html">Tags</a></li>
+      	
+      
+    
+  
+
+
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-narrow">
+
+      <div class="content">
+        
+<div class="page-header">
+  <h1>Semantics "The" by C++ template </h1>
+</div>
+
+<div class="row-fluid post-full">
+  <div class="span12">
+    <div class="date">
+      <span>08 July 2014</span>
+    </div>
+    <div class="content">
+      <p>在程序中经常使用singleton模式，倒不是为了限制说只能有一个实例，而是为了通过类名直接访问一个实例，不必关心这个实例放在哪里。在面向对象的世界里，我们关心的是一些对象的状态而非过程，有很多对象始终存在，但是我们又不得不在某个地方将其定义。这一点在GUI程序中显得尤其明显。一般界面元素会在程序执行的整个生命周期存在于内存中，我并不关心他们之间的什么层次关系。有时候不管我的程序运行在哪，我就是想要更新界面上的一个Menu。</p>
+
+<p>于是用C++写了这么一个伪singleton模板，实现“The语义”。假如定义了类UIMenu1，The<uimenu1>()可以自动转化为一个UIMenu1的指针，进而做任何想做的事情。使用的时候我不用关心这个UIMenu1的实例放在哪里，实际上它是全局的，但是我知道每次使用The得到的是同一个实例。</uimenu1></p>
+
+<pre><code class="language-cpp">template&lt;class Cls, int = 0&gt;
+class The
+{
+public:
+	Cls* operator-&gt;()	{ return get_instance(); }
+ 
+	operator Cls*&amp;()	{ return get_instance(); }
+	
+private:
+	Cls *&amp;get_instance()
+	{
+		static Cls *s_instance = new Cls;
+		return s_instance;
+	}
+};
+</code></pre>
+
+<p>这几乎完全就是一个singleton的实现，只不过没有把构造函数私有化。据我自己的经验，私有化构造函数从来没派上过用场。当我只需要全局唯一的一个实例的时候，我自然会用The来访问。如果自己另外实例化一个对象，很显然和The访问到的不是同一个，这在语义上也说得过去。况且，偶尔可以存在类似The<myclass>()-&gt;swap(MyClass())之类的用法。因此不限制实例化，程序就更灵活一些。</myclass></p>
+
+<p>另外，也许有时候可能我们需要访问到的实例不是唯一的，而是唯二，唯三的呢？一种办法是可以写一个Wrapper类把几个对象放进去，再用The<wrapper>()-&gt;GetFirstOne()之类的办法访问。但是这样太麻烦，所以我给The模板加了一个int型参数，默认参数0，之前的用法不受影响。现在The&lt;MyClass, 1&gt;提供了“The MyClass with index 1”的语义，访问到的和The<myclass>（等同于The&lt;MyClass, 0&gt;）是不同的实例。</myclass></wrapper></p>
+
+<p>有关The和更多his模板库里的内容在：<a href="https://github.com/while2/his">https://github.com/while2/his</a></p>
+
+    </div>
+
+    
+
+    
+
+    <hr>
+    <div class="pagination">
+      <ul>
+      
+        <li class="prev"><a href="/bit-counting" title="Bit Counting">&larr; Previous</a></li>
+      
+        <li><a href="/archive.html">Archive</a></li>
+      
+        <li class="next"><a href="/clip-doggy" title="Clip Doggy">Next &rarr;</a></li>
+      
+      </ul>
+    </div>
+    <hr>
+    
+  </div>
+</div>
+
+
+      </div>
+      <hr>
+      <footer>
+        <p>&copy; 2014 He Yi
+          with help from <a href="http://jekyllbootstrap.com" target="_blank" title="The Definitive Jekyll Blogging Framework">Jekyll Bootstrap</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+        </p>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
+
