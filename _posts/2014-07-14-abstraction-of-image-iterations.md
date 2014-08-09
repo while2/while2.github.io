@@ -29,7 +29,7 @@ to define the range.
 
 On the other hand, a 2D array iterator is not as intuitive, especially when you intend to support ROI(Region of Interest), or even more complicated interative ways.
 
-After some mindstorm I have this series of iteration functions for my template class [__MatrixWrapper__](https://github.com/while2/his/blob/master/MatrixWrapper.hpp). 
+After some mindstorm I have this series of iteration functions for my template class [__MatrixWrapper__](https://github.com/while2/his/blob/master/ImageProcessing/MatrixWrapper.hpp). 
 
 `for_each` takes a few `MatrixWrapper`s (images with the same size) and a functor (takes one element for each image), then iterates all images, and feed the functor with elements at the same position in different images.
 
@@ -141,7 +141,7 @@ struct Idx { int x, y; };
 typedef Matrix<Idx> IdxMap;
 ~~~
 
-But with a tricky implementation, [IdxMap](https://github.com/while2/his/blob/master/IdxMap.hpp) does not need actually memories.
+But with a tricky implementation, [IdxMap](https://github.com/while2/his/blob/master/ImageProcessing/IdxMap.hpp) does not need actually memories.
 
 ###How many images are supported?
 Now I simply overload `for_each` functions to iterate one, two, three or four images correspondingly. However, with C++11 variadic template arguments, all of them can be unitied into a single defination. Unfortunately I work on Visual Studio, which is always slow to follow the standards. So far my compiler does not support variadic templates, I have to do with this.

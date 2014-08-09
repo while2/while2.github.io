@@ -1,9 +1,9 @@
 ---
 layout: post
 title: Abstraction of 2d Filter
-abstract: This post explained the details of function filter in <a href='https://github.com/while2/his/blob/master/Filter.hpp'>his lib</a>, which provides a convenient interface to define linear, non-linear, and even non-numerical filters.
+abstract: This post explained the details of function filter in <a href='https://github.com/while2/his/blob/master/ImageProcessing/Filter.hpp'>his lib</a>, which provides a convenient interface to define linear, non-linear, and even non-numerical filters.
 ---
-With the convenience of [abstraction of iterations](http://while2.github.io/abstraction-of-iterations.html), I felt necessary abstract filter with similar technics.
+With the convenience of [abstraction of iterations]({% post_url 2014-07-14-abstraction-of-image-iterations %}), I felt necessary abstract filter with similar technics.
 
 Recently in my program I need to apply different non-linear filters to my images, which leads to terrible iterations like:
 
@@ -89,6 +89,6 @@ where `input_image` and `output_image` are two images, `kernel` is a gaussian ke
  
 The trick is to use lambda expression to capture intermediate variables(the sum of rgb color and the sum of weights in above example). In such a way __Accumulation__ and __Evaluation__ can share informations to finish the work together.
 
-A [more sophisticated implementation](https://github.com/while2/his/blob/master/Filter.hpp) removes unnecessary boundary checks at the central part of the image.
+A [more sophisticated implementation](https://github.com/while2/his/blob/master/ImageProcessing/Filter.hpp) removes unnecessary boundary checks at the central part of the image.
 
 With two lambda expressions, a filter, linear or non-linear, or even non-numerical ones, can be esaily defined. TPAMI 2014 paper 'Stereo Matching Using Tree Filtering' introduced a complicated 'Tree Filter' which builds a minimum spanning tree with local input pixels and use the distances as weights. This can be implemented by `filter` function too. 
