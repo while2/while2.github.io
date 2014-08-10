@@ -1,5 +1,6 @@
 ---
 layout: post
+tags: code
 title: Signel Number II from Leetcode
 ---
 

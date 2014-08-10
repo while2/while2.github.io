@@ -1,5 +1,6 @@
 ---
 layout: post
+tags: code math
 ---
 
 A very funny problem from [Google Code Jam](https://code.google.com/codejam/contest/32016/dashboard#s=p2).

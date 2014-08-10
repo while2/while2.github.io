@@ -69,7 +69,7 @@ JB :
   # Some JB helpers refer to these paths; change them here if needed.
   #
   archive_path: /archive.html
-  categories_path : /categories.html
+  #categories_path : false #/categories.html
   tags_path : /tags.html
   atom_path : /atom.xml
   rss_path : /rss.xml
@@ -79,9 +79,9 @@ JB :
   # Set 'provider' to false to turn commenting off globally.
   #
   comments :
-    provider : false
+    provider : disqus
     disqus :
-      short_name : jekyllbootstrap
+      short_name : while2
     livefyre :
       site_id : 123
     intensedebate :
