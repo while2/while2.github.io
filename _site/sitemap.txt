@@ -11,6 +11,9 @@ http://while2.github.io/abstraction-of-2d-filter
 http://while2.github.io/abstraction-of-image-iterations
 http://while2.github.io/clip-doggy
 http://while2.github.io/semantics-the-by-cpp-template
-http://while2.github.io/bit-counting
 http://while2.github.io/single-number-II-from-leetcode
 http://while2.github.io/edit-distance-from-leetcode
+http://while2.github.io/solve-ax-0-via-svd
+http://while2.github.io/bit-counting
+http://while2.github.io/matrix-rank-information-perspective
+http://while2.github.io/curvature-and-circular-dynamics

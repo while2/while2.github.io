@@ -109,7 +109,7 @@
       <span>21 July 2014</span>
     </div>
     <div class="content">
-      <p>With the convenience of <a href="http://while2.github.io/abstraction-of-iterations.html">abstraction of iterations</a>, I felt necessary abstract filter with similar technics.</p>
+      <p>With the convenience of <a href="/abstraction-of-image-iterations">abstraction of iterations</a>, I felt necessary abstract filter with similar technics.</p>
 
 <p>Recently in my program I need to apply different non-linear filters to my images, which leads to terrible iterations like:</p>
 
@@ -193,7 +193,7 @@ his::filter(input_image, output_image, kernel,
 
 <p>The trick is to use lambda expression to capture intermediate variables(the sum of rgb color and the sum of weights in above example). In such a way <strong>Accumulation</strong> and <strong>Evaluation</strong> can share informations to finish the work together.</p>
 
-<p>A <a href="https://github.com/while2/his/blob/master/Filter.hpp">more sophisticated implementation</a> removes unnecessary boundary checks at the central part of the image.</p>
+<p>A <a href="https://github.com/while2/his/blob/master/ImageProcessing/Filter.hpp">more sophisticated implementation</a> removes unnecessary boundary checks at the central part of the image.</p>
 
 <p>With two lambda expressions, a filter, linear or non-linear, or even non-numerical ones, can be esaily defined. TPAMI 2014 paper ‘Stereo Matching Using Tree Filtering’ introduced a complicated ‘Tree Filter’ which builds a minimum spanning tree with local input pixels and use the distances as weights. This can be implemented by <code>filter</code> function too. </p>
 
