@@ -6,7 +6,7 @@ abstract: This post describes the idea of my image iteration methods. Which reli
 ---
 While coding for image processing, I often need to write 2d iterations like this:
 
-~~~ cpp
+{% highlight cpp %}
 for (int y = 0; y < image1.height(); ++y)
 {
 	for (int x = 0; x < image1.width(); ++x)
@@ -17,7 +17,7 @@ for (int y = 0; y < image1.height(); ++y)
 		// ...
 	}
 }
-~~~
+{% endhighlight %}
 
 This bunch of code is so ubiquitous and I have little tolerance to type such trival things again again and again.
 
@@ -36,22 +36,21 @@ After some mindstorm I have this series of iteration functions for my template c
 
 A rgb to gray example:
 
-~~~ cpp
-struct Pixel { uchar rgb[3]; };
-his::MatrixWrapper<Pixel> image_wrapper;
+{% highlight cpp %}
+his::MatrixWrapper<uchar[3]> image_wrapper;
 his::MatrixWrapper<uchar> gray_wrapper;
 
-his::for_each(image_wrapper, gray_wrapper, [](const Pixel &pixel, uchar &gray) {
-	gray = pixel.rgb[0] * 0.299 
-		 + pixel.rgb[1] * 0.587
-		 + pixel.rgb[2] * 0.114;
+his::for_each(image_wrapper, gray_wrapper, [](const char rgb[3], uchar &gray) {
+	gray = rgb[0] * 0.299 
+		 + rgb[1] * 0.587
+		 + rgb[2] * 0.114;
 }
-~~~
+{% endhighlight %}
 
 
 With `for_each` defined as:
 
-~~~ cpp
+{% highlight cpp %}
 template<class Mat1, class Mat2, class Func>
 void for_each(Mat1 &mat1, Mat2 &mat2, Func func)
 {
@@ -71,7 +70,7 @@ void for_each(Mat1 &mat1, Mat2 &mat2, Func func)
 		}
 	}
 }
-~~~
+{% endhighlight %}
 
 When binded to the template parameters, `Mat1` and `Mat2` are color/gray images with template variable `Pixel` and `uchar` respectively, and Func is the lambda expression which takes a `const Pixel &` and a `uchar &` to convert the RGB color to a gray scale intensity.
 
@@ -80,13 +79,13 @@ So far it's all straight forward. But there are some details need to explain:
 ###Type safety?
 Some of you might prefer:
 
-~~~ cpp
+{% highlight cpp %}
 template<typename T1, typename T2, class Func>
 void for_each(his::MatrixWrapper<T1> &mat1, his::MatrixWrapper<T2> &mat2, Func func)
 {
 	// ...
 }
-~~~
+{% endhighlight %}
 
 Any type instead of `MatrixWrapper` should not compile! That's right, but in this way you need to provide two versions(const and non-const) for each image. In this two image iteration case, four functions must be defined. With the number of images increasing, this becomes infeasible. I known template is very powerful, so there must be some tricky way, but I don't want to make things too complicated.
 
@@ -94,7 +93,7 @@ With the privious method, `Mat1` can bind to `const his::MatrixWrapper<T1> &` or
 
 But how about he type safety? As designed, `for_each` supports only `MatrixWrapper`. When some other types was passed to it, there should be an explicit compile error. So I add a contract into `MatrixWrapper`:
 
-~~~ cpp
+{% highlight cpp %}
 template<typename T>
 class MatrixWrapper<T>
 {
@@ -102,13 +101,13 @@ public:
 	enum { FOR_EACH_ABLE, };
 	// ...
 };
-~~~
+{% endhighlight %}
 
 And check this 'password' with a Macro:
 
-~~~ cpp
+{% highlight cpp %}
 #define CHECK_TYPE(Mat) Mat::FOR_EACH_ABLE
-~~~
+{% endhighlight %}
 
 If some other type rather than my ```MatrixWrapper``` was passed to the `for_each` methods, a compile error will be triggered, as 
 `error C2039: 'FOR_EACH_ABLE' : is not a member of OtherType`
@@ -124,23 +123,23 @@ With a similar interface, the only difference is that the functor takes two pixe
 
 Following is a laplacian example, where `b1` and `b2` are neighboring pixels from the src gray image, `f1` and `f2` are corresponding pixels from the dst float image. In the lambda expression, `f1` corresponds to `b1`, and a gray scale gradient towards neighbor `b2` was added to `f1`. In the whole process, this accumulates all neighbors for each of the dst pixels. With dst image initialized all zeros, this results a laplacian of the input.
 
-~~~ cpp
+{% highlight cpp %}
 his::for_each_pair(gray_wrapper, laplace_wrapper,
 	[](uchar b1, uchar b2, float &f1, float &f2) {
 	f1 += (b1 - b2);
 	f2 += (b2 - b1);
 });
-~~~
+{% endhighlight %}
 
 To build a Poisson eqaution, the lambda expression can easily capture your matrices or other equation builders.
 
 ###How about the iterative variables?
 One advantage of these functions is that they hide the iterative variables and make the code more clear. But sometimes we really need iterative variables. The solution is to provide an extra ```IdxMap``` to the functions, which __*appears*__ like a 2-channels int image, with each element the x-y-position of the pixel:
 
-~~~ cpp
+{% highlight cpp %}
 struct Idx { int x, y; };
 typedef Matrix<Idx> IdxMap;
-~~~
+{% endhighlight %}
 
 But with a tricky implementation, [IdxMap](https://github.com/while2/his/blob/master/ImageProcessing/IdxMap.hpp) does not need actually memories.
 

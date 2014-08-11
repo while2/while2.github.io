@@ -9,7 +9,7 @@ Briefly:
 
 > Find the last three digits before the decimal point for the number $$ (3 + \sqrt{5})^n $$.
 
-This remind me of the closed form formula of [Fibonacci series][fib], if you don't have patients, jump to [Proof](#induction-proof).
+This remind me of the closed form formula of Fibonacci series[^fib], if you don't have patients, jump to [Proof](#induction-proof).
 
 ###Start from Fibonacci
 
@@ -78,7 +78,7 @@ Put in $$ a = 3, b = 1$$, we know that the second part  $$(3-\sqrt5)^n$$ is alwa
 ###Code
 The code is simple compare to the deducing:
 
-~~~ cpp
+{% highlight cpp %}
 #include <stdio.h>
 
 int main() {
@@ -104,6 +104,6 @@ int main() {
 	}
 	return 0;
 }
-~~~
+{% endhighlight %}
 
-[fib]: http://en.wikipedia.org/wiki/Fibonacci_number#Closed-form_expression "Fibonacci Series"
+[^fib]: [http://en.wikipedia.org/wiki/Fibonacci_number](http://en.wikipedia.org/wiki/Fibonacci_number)
