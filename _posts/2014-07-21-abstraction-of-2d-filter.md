@@ -8,7 +8,7 @@ With the convenience of [abstraction of iterations]({% post_url 2014-07-14-abstr
 
 Recently in my program I need to apply different non-linear filters to my images, which leads to terrible iterations like:
 
-~~~ cpp
+{% highlight cpp %}
 for (int y = 0; y < image.rows(); ++y)
 {
 	for (int x = 0; x < image.cols(); ++x)
@@ -27,7 +27,7 @@ for (int y = 0; y < image.rows(); ++y)
 		}
 	}
 }
-~~~
+{% endhighlight %}
 
 I'd like to put them in a function so I can focus on the filter process without typing these regular code again and again.
 

@@ -112,8 +112,6 @@ And check this 'password' with a Macro:
 If some other type rather than my ```MatrixWrapper``` was passed to the `for_each` methods, a compile error will be triggered, as 
 `error C2039: 'FOR_EACH_ABLE' : is not a member of OtherType`
 
-~~C++11 [static_assert](http://en.cppreference.com/w/cpp/language/static_assert) provides a better solution, where an error message can be displayed.~~
-
 >Template specialization does not work for derived classes. So any subclasses of `Matrix` or `MatrixWrapper` can not benefit from `for_each` series. One alternative is to use [boost type trait](http://www.boost.org/doc/libs/1_55_0/libs/type_traits/doc/html/boost_typetraits/reference/is_base_of.html) to check the inheritance relationship. But that brought extra dependency and makes things too complicated. So I'll stick on my original idea.
  
 ###Pairwise iteration
