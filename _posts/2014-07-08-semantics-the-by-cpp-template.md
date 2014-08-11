@@ -7,7 +7,7 @@ title: Semantics "The" by C++ template
 
 于是用C++写了这么一个伪singleton模板，实现“The语义”。假如定义了类UIMenu1，The<UIMenu1>()可以自动转化为一个UIMenu1的指针，进而做任何想做的事情。使用的时候我不用关心这个UIMenu1的实例放在哪里，实际上它是全局的，但是我知道每次使用The得到的是同一个实例。
 
-~~~ cpp
+{% highlight cpp %}
 template<class Cls, int = 0>
 class The
 {
@@ -23,7 +23,7 @@ private:
 		return s_instance;
 	}
 };
-~~~
+{% endhighlight %}
 
 这几乎完全就是一个singleton的实现，只不过没有把构造函数私有化。据我自己的经验，私有化构造函数从来没派上过用场。当我只需要全局唯一的一个实例的时候，我自然会用The来访问。如果自己另外实例化一个对象，很显然和The访问到的不是同一个，这在语义上也说得过去。况且，偶尔可以存在类似The<MyClass>()->swap(MyClass())之类的用法。因此不限制实例化，程序就更灵活一些。
 

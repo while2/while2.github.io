@@ -22,7 +22,7 @@ Dist(i, j)=min\{Dist(i-1,j-1)+ \sigma(i-1,j-1), Dist(i-1,j)+1, Dist(i,j-1)+1\}
 
 然后发现，二维数组是不必要的，每次更新只和上一行有关，所以开出两行来就足够了。每次利用上一行的信息更新下一行，然后swap。由于全部做完之后有一次swap，所以最终结果存放在row1的最后一个元素。
 
-~~~ cpp
+{% highlight cpp %}
 int minDistance(string word1, string word2) { 
     vector<int> row1(word2.size()+1), row2(word2.size()+1); 
     for (int i = 0; i <= word2.size(); ++i) { 
@@ -40,4 +40,4 @@ int minDistance(string word1, string word2) {
     } 
     return row1.back();
 }
-~~~
+{% endhighlight %}

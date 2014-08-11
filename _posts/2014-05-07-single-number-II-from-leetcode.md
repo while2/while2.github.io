@@ -13,7 +13,7 @@ title: Signel Number II from Leetcode
 int当中同一位b，在任何一个数字中出现次数，只要满了3次，就可以归0，对最后结果也不产生影响。
 方法就是利用位运算和模，把计数变成几个很小的int之间的位操作。
 
-~~~ cpp
+{% highlight cpp %}
 int singleNumber(int A[], int n) {
 	int count[2] = {0, 0};
 	for (int i = 0; i < n; ++i) {
@@ -26,4 +26,4 @@ int singleNumber(int A[], int n) {
 	}
 	return count[0] | count[1];
 }
-~~~
+{% endhighlight %}

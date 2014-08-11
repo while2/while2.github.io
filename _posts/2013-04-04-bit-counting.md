@@ -7,7 +7,7 @@ abstract: 求一个二进制数内1出现的次数，经常被用来考人。除
 
 最简单的是循环与，挨个看每一位是1还是0。这个方法要循环很多次，从低位到高位逐位检查，直到更高位没有1为止。
 
-~~~ cpp
+{% highlight cpp %}
 int count_bits_naive(unsigned int a)
 {
     int count = 0;
@@ -18,11 +18,11 @@ int count_bits_naive(unsigned int a)
     }
     return count;
 }
-~~~
+{% endhighlight %}
 
 一个比较经典的是self anding的办法，它的动机是减少循环次数，可不可以只数1，不管0。有没有办法不管什么情况下，都能一次消除一个1？于是它利用了这样一个现象，就是一个数减去1的话，它的最末一个1，以及之后的所有0，全部变反，前面的位不变。因此要消除最末一个1，可以把一个数减一再与自己。这样一次消除一个1，消除到0就停止循环。因此可以减少循环次数到1的个数。
 
-~~~ cpp
+{% highlight cpp %}
 int count_bits_self_anding(unsigned int a)
 {
     int count = 0;
@@ -33,7 +33,7 @@ int count_bits_self_anding(unsigned int a)
     }
     return count;
 }
-~~~
+{% endhighlight %}
 
 虽然是以32位的int为例，但其实思想并不局限于32位，当位串很长的时候，naive的办法就挫爆了，当位串中1很多的时候，self anding的办法也挫爆了。
 
@@ -43,7 +43,8 @@ int count_bits_self_anding(unsigned int a)
 
 所以并行算法的关键就是把a分段，然后做段与段之间的加法。每段保存的是这段里面1的个数。只不过从把递归变为循环，它是从局部到整体来计算。当段长度为1时，a本身就是c。所以第一步把相邻两个长度为1的段加到一起。比如11 00 10 01，就变为10 00 01 01。因为11中间1的个数是10，00中间1的个数是00，10和01中间1的个数是01。然后再取段长为2，把相邻段加起来，1000 0101变成0010 0010，因为10+00=0010,01+01=0010。以此类推，最后把前16位和后16位加起来就得到了整个32位里面的1的个数。由于1的个数总是比a本身要小，所以才没有进位的问题，两个段长为n的段，加起来长度肯定不超过2n，所以不用担心后面的段相加会影响前面。
 
-~~~ cpp
+
+{% highlight cpp %}
 int count_bits_parallel(unsigned int a)
 {
     static const unsigned int mask[] = {
@@ -60,13 +61,14 @@ int count_bits_parallel(unsigned int a)
     a = ((a >> 16) & mask[4]) + (a & mask[4]);
     return a;
 }
-~~~
+{% endhighlight %}
 
 mask用来提取子串，a右移是为了错位，把前段挪到和后段对齐，然后前后段分别和mask做与运算滤掉不需要的位，再加起来。
 
 然后有一个更加tricky的方法：
 
-~~~ cpp
+
+{% highlight cpp %}
 int count_bits_tricky(unsigned int a)
 {
     a = a - ((a >> 1) & 0x55555555);
@@ -75,7 +77,7 @@ int count_bits_tricky(unsigned int a)
     a *= 0x01010101;
     return a >> 24;
 }
-~~~
+{% endhighlight %}
 
 第一步改成a = a - ((a >> 1) & 0x55555555);省去一个与运算。
 
@@ -96,7 +98,7 @@ int count_bits_tricky(unsigned int a)
 
 但这实际上是把移位相加的工作交给乘法指令去做了。所以一开始我并不认为这样会快多少，就自作聪明的写了个：
 
-~~~ cpp
+{% highlight cpp %}
 int count_bits_foo(unsigned int a)
 {
     a = a - ((a >> 1) & 0x55555555);
@@ -105,7 +107,7 @@ int count_bits_foo(unsigned int a)
     a = (a + (a >> 8)) & 0x00FF00FF;
     return (a + (a >> 16)) & 0x0000FFFF;
 }
-~~~
+{% endhighlight %}
 
 把一个乘法指令换成了两次移位相加再做与，测试了一下，所花时间大概是原来算法的1.5倍。虽然加减，与或，移位这些运算会比较快，但是乘法也没有那么慢的，六个简单指令换一个乘法，果然还是败了。
 
