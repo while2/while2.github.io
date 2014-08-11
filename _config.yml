@@ -1,4 +1,7 @@
+markdown_ext: foo
+markdown: kramdown
 highlighter: pygments
+
 # This is the default format. 
 # For more see: http://jekyllrb.com/docs/permalinks/
 permalink: /:title
