@@ -86,13 +86,13 @@ int main() {
 	for (int t = 1; t <= T; ++t) {
 		int n; scanf("%d", &n);
 		int a = 1, b = 0;
-		for (unsigned bit_flat = 1 << 31; bit_flat > 0; bit_flat >>= 1) {
+		for (unsigned bit_flag = 1 << 31; bit_flag > 0; bit_flag >>= 1) {
 			// A_n = (A_{n/2})^2
 			int a2 = a*a + 5*b*b;
 			int b2 = 2*a*b;
 			a = a2 % 1000, b = b2 % 1000;
 
-			if (bit_flat & n) {
+			if (bit_flag & n) {
 				// A_n = A_{n-1} * (3 + \sqrt 5)
 				int a2 = 3*a + 5*b;
 				int b2 = a + 3*b;
