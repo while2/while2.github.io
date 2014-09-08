@@ -14,9 +14,10 @@ As described in "Introduction to Algorithms", given an array with indices [s, e)
 1. Values in [s, i] is less than p,
 2. Values in (i, j] greater or equal to p. 
 
-Then iterate j from s to e. After ++j, if the value of j is less than the pivot, then the property that values in (i, j] >= p was broken. Fix this by swapping it with the first element in (i, j], and ++i. When j reaches e, the partition is down.     
+Initialise i and j as s-1 so the properties hold at the beginning.
+Then iterate j from s to e. After ++j, if the value of j is less than p, then the 2nd property broke. This can be fixed by swapping j with the first element in (i, j], then increase i. When j reaches e, the partition is done.
 
-Although this is quite easy for arrays, its not straightforward for a Single-Linked-List, especially when you want to swap nodes instead of data.
+Although this is quite easy for arrays, its not straightforward for a Single-Linked-List, when you want to swap nodes instead of their data.
 
 Given `ListNode` defined as:
 {% highlight cpp %}
@@ -62,7 +63,7 @@ p2--+    +-->| b |pb|---->
              +---+--+
 </pre>
 
-The status after swap((\*p1)->next, (\*p2)->next);
+The status after swap((\*p1)->next, (\*p2)->next):
 <pre>
             *p2
              +---+--+
@@ -76,7 +77,7 @@ p2--+    +-->| b |pb|--+    +-->
 </pre>
 Note that pa always follows node a, swapping can change it's value but can never change its address.
 
-This neat swapping also works for neighboring nodes.
+This simple swapping also works for neighboring nodes.
 Given 2 nodes as:
 <pre>
        *p1          *p2
@@ -105,10 +106,11 @@ p1--+   +-->| a |p2|--+    +-->| b |pb|--+    +-->
        \                /\                 /
         +--------------+  +---------------+
 </pre>
-`(*p1)->next` refer to pb, swap it to `(*p2)->next`, which is node a itself, breaks the circle and gives the right result.
+`(*p1)->next` used to refer to pb, swap it with `(*p2)->next`, which is node a itself, breaks the circle and gives the right result.
 
 The only problem is that the resulting `p1` and `p2` differs in these two cases.
-Replace `i`, `j` with `p1` and `p2` in the partition formula, in the general case, p2 points to the swapped greater node, so (p1, p2] holds the right property after the swap. However, in the neighbouring case, p2 moves one step ahead, points to the next node to be considered. To fix this, we set `p2 = &(*p1)->next` in this case.
+
+Replace `i`, `j` with `p1` and `p2` in the partition formula, in the general case, p2 points to the swapped greater node, so (p1, p2] holds the 2nd property after the swap. However, in the neighbouring case, p2 moves one step ahead, points to the next node to be considered. To fix this, we set `p2 = &(*p1)->next` in this case.
  
 So the final QuickSort comes like this, with the first node selected as pivot:
 
@@ -144,6 +146,6 @@ ListNode *QuickSort(ListNode *head, ListNode *tail) {
 }
 {% endhighlight %}
 
-QuickSort is notorious for its degeneration when the sequence has already some sort of order so that the paitition cannot divide the problem normally. Since Linked-List can not be randomly accessed efficiently, it is more difficult to design a pivot selecting method.
+QuickSort is notorious for its degeneration when the sequence has already some sort of order so that the partition cannot divide the problem normally. Since Linked-List can not be randomly accessed efficiently, it is more difficult to design a pivot selecting method.
 
 That's why I would not recommend to quick sort a Linked-List, in any case an array solution sounds better. In case your data is not efficient enough to be swapped, use a pointer array. 
