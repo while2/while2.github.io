@@ -1,6 +1,6 @@
 ---
 layout: post
-tags: code
+tags: code c++
 title: Signel Number II from Leetcode
 ---
 
