@@ -1,6 +1,7 @@
 ---
 layout: post
-tags: math linear-algebra
+tags: linear-algebra DLT SVD
+categories: math
 title: SVD求Ax=0的非零解
 ---
 最近解Homography的问题，看到这个解法，甚是科学。

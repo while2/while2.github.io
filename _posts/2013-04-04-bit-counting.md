@@ -1,6 +1,7 @@
 ---
 layout: post
-tags: code c++ bit-manipulating
+tags: c++ bit-manipulating
+categories: code
 abstract: 求一个二进制数内1出现的次数，经常被用来考人。除了最经典的减一与运算的方法，还可以利用位间的并行性，以及更加诡异的方法。
 ---
 以前听说过这么一个问题，就是求一个二进制数里面有多少个1。最近在写代码的时候也碰到了需要对标志位计数的情况。后来发现bit-counting还有蛮多有趣的话题。一半听来一半看来一个并行算法，觉得挺有意思，记在下面。不过还是从最简单的counting开始。

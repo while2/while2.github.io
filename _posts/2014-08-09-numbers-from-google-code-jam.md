@@ -1,6 +1,7 @@
 ---
 layout: post
-tags: code math c++ 
+tags: math c++ google-code-jam online-judge
+categories: code
 ---
 
 A very funny problem from [Google Code Jam](https://code.google.com/codejam/contest/32016/dashboard#s=p2).

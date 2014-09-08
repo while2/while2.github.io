@@ -1,6 +1,7 @@
 ---
 layout: post
-tags: code c++ linked-list
+tags: c++ linked-list sort
+categories: code
 abstract: This post shows how to swap two nodes in a Single-Linked-List and how to apply quick sort for lists. Although it's not recommended.
 ---
 

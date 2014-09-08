@@ -1,6 +1,7 @@
 ---
 layout: post
-tags: code c++
+tags: c++ leetcode online-judge
+categories: code
 title: Signel Number II from Leetcode
 ---
 
