@@ -8,8 +8,10 @@ layout: page
 
   		<li><span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a></li>
   		
-  		{% if post.teaser %}
-  		<p><a href="{{ post.url }}"><img src="{{ post.teaser }}" width="100%"></a></p>
+      {% if post.teaser %}
+     <blockquote>
+  		<a href="{{ post.url }}"><img src="{{ post.teaser }}" width="100%"></a>
+  		</blockquote>
   		{% endif %}
   		
   		{% if post.abstract %}

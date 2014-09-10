@@ -1,6 +1,7 @@
 ---
 layout: post
 teaser: /images/doggy/teaser.JPG
+
 ---
 
 Binder Clips are creative toys, your can use them to build incredible things.
