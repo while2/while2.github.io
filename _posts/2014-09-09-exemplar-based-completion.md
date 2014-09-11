@@ -1,7 +1,7 @@
 ---
 layout: post
-tags: image-completion inpainting
-categories: vision
+tags: image-processing image-completion
+categories: computer-vision
 title: A Review of Exemplar-based Image Completion
 abstract: For image editing, there are many reasons to reconstruct some missing contents from an image, to repair deterioration, remove undesirable objects etc. Exemplar-base algorithms use pixels from the same image to fill missing areas and achieved the state of art results. This post breifly reviews the history of exemplar-based methods, and ends up with a TPAMI'14 paper. <p><img src="/images/completion/bungee.jpg" width="20%"/> <img src="/images/completion/bungee-mask.png" width="20%"/> <img src="/images/completion/bungee-result.png" width="20%"/> <img src="/images/completion/bungee-label.png" width="20%"/></p>
 
@@ -15,15 +15,15 @@ Firstly, the PDE based algorithms. This class of methods based on pixels, not go
 Exemplar-based methods use patches to find similar contents in the same image, and fill the missing regions with these contents. A higher level features can be expressed by patches, so it works fine for larger holes.
 
 <a name="bungee"/>
-Following is a result from my implementation of an exemplar-based method based on [statistics of offsets][^8]:
+Following is a result of my implementation of an exemplar-based method based on TPAMI'14 paper[^8], the image is from another paper[^1].
 
 |![Input](/images/completion/bungee.jpg)|![Mask](/images/completion/bungee-mask.png)|![Result](/images/completion/bungee-result.png)|![Shift-Map](/images/completion/bungee-label.png)|
 | :---: | :--: | :----: | :-------: |
 | Input | Mask | Result | Shift-Map |
 
-Although patch is a higher level feature than pixel (almost the same level as SIFT if you count the bits), it's still not enough for complex contents because it doesn't contain any semantics information. Some artifacts are just not artifacts until you put them in a view of semantics. In other words, the computer would think he works perfectly fine unless he can understand the object he's dealing with.
+Although patch is a higher level feature than pixel (almost the same level as SIFT if you count the bits), it's still not enough for complex contents because it doesn't contain any semantic information. Some artifacts are just not artifacts until you put them in a view of semantics. In other words, the computer would think he works perfectly fine unless he can understand the object he's dealing with.
 
-For example the bungee result contains some repeated patterns on plants, which is weird for human. While the algorithm does not understand this, he took the repeating of the roof as an evidence that this area has a horizontal structure, which is true. But how could he know that the structure should not affect natural objects as plants.
+For example the bungee result contains some repeated patterns on plants, which is weird for human. While the algorithm does not understand this, he took the repeating of the roof as an evidence that this area has a horizontal structure, which is true. But how could he know that the structure belongs to the man-made roof instead of the natural plants? He just cannot tell without any higher knowledges.
 
 Thus some problems are just impossible to solve in the patch level. That's why I'd say the further study of image completion must be on semantics. But that's the future story, while this post focused on the patch based methods.
 
@@ -37,6 +37,8 @@ In each iteration some of the missing pixels were filled. By defining priorities
 Back to 2003, this was state of the art algorithm. It was simple, straightforward and works much better than PDE methods. But a greedy approach usually provides a suboptimal result. Moreover, I think this paper does not have a big picture. It seems right in every step, but did not give a mathematical explanation on what's going on behind. In Variational Method's view, what is the objective function to optimize?
 <a name="onion-peeling"/>
 ![Bungee](/images/completion/CVPR03-bungee.png)
+
+> Based on this, an interactive method[^11] was introduced to cope with structural contents. A curve was drawn to indicate the structure and dynamic programming was used to optimize the consistency of structural contents, also the searching space was largely reduced thanks to the manually work.
 
 ##Objective Function
 [Shift-Map Image Editing][^2], an ICCV'09 paper provides a reasonable model. The image completion problem was defined as a Shift-Map optimization problem. Because exemplar-based method copies existed pixel to another place (in the hole), for each of the missing pixels, instead of asking what color it is, we can ask where should it come from. A Shift is a vector from the missing pixel to an existed one, the source pixel supposed to be copied to the missing place. Now a Shift-Map S can be defined on the missing areas, where S(p) is the shift vector at position p. Once we know S, we can find the source pixel at S(p), and copy it to replace p. Then the completion is done.
@@ -52,7 +54,7 @@ where the data term $$E_d$$ measure the goodness of a single pixel, the smoothne
 $$\lambda_2$$ was set large to force the constraint. As for $$\lambda_1$$, we will later put it into [$$E_s$$](#Es) and use different weights for different pixels' smoothness term. See [Smoothness term weights](#smoothness-term-weights) for details.
 
 ###Data term
-If we want to use S(p) to replace p, S(p) would better be a known pixel. If the shift at p shifts to another missing pixel, it does not help. So we'd like those shifts that can lead us out of the hole.
+If we want to use S(p) to replace p, S(p) would better be a known pixel. If the shift at p shifts to another missing pixel, it does not help. Thus a desirable shift should lead us out of the hole.
 
 Translate our requirements to mathematics:
 
@@ -104,7 +106,7 @@ Adjacent missing pixels __a__ and __b__, has different shifts. Say __a__ want to
 
 But what if we have a __b2__ with the same color of __b1__? Isn't it equivalent to use __a1__ and __b1__ as before! So it's still perfect. Actually as long as __a1__ __b1__ looks similar to __a2__ __b2__, the seam can be unnoticeable.
 
-> It seams like either a __a1__ closed to __a2__ or a __b1__ close to __b2__ is sufficient, do we really need to satisfy them both? In fact 2 pixels are still too local to define consistency. While the paper took 2 pixels, I recommend to use even more, as you will see.
+> It seams like either a __a1__ closed to __a2__ or a __b1__ close to __b2__ is sufficient, do we really need to satisfy them both? In fact we are interesting with the similarity of contents, not the pixels, even 2 pixels are still too local to represent the contents. While in most of the papers they count both pixels, I recommend to use even more, as you will see.
 
 <a name="Es"/>
 So here comes the smoothness term:
@@ -146,6 +148,8 @@ $$
 
 where $$d_a$$/$$d_b$$ are the distances from pixel a/b to the nearest boundary and $$\gamma$$ is experientially set to 1.3.
 
+> The [TPAMI'07][^3] method was integrated with [Patch Match][^9] in Adobe Photoshop CS5 known as Content-Aware Filling. It adopts an EM approach to optimize a different objective function and is very successful in applications. But it does not closely related to our implementation so I would save the details.
+
 ##Optimization
 Discretizing the unknown space, above function can be transformed to a discrete labeling problem, where each label represents a possible shift, and the solution is to assign labels to pixels. With the above objective function, the optimization belong to a well studied type: [Markov Random Field][^5] (MRF) problems, where the objective function comprises data terms(depending on a single node/pixel) and smoothness terms(depending on two adjacent nodes/pixels). More complicated patterns are not considered. Our boundary condition can be combined to the data terms.
 
@@ -160,7 +164,18 @@ They use [Patch Match][^9] to compute a NNF(Nearest Neighbor Field), where the N
 
 As shown in the optimal [Shift-Map](#bungee), there are only tens of shifts were used to reconstruct the missing contents, and results better than the [onion peeling method](#onion-peeling).
 
-References:
+##More results:
+
+| Input | Mask | Result |
+| :---: | :--: | :----: |
+|![Input](/images/completion/pumpkin.jpg)|![Mask](/images/completion/pumpkin-mask.png)|![Result](/images/completion/pumpkin-result.png)|
+|![Input](/images/completion/elephant.jpg)|![Mask](/images/completion/elephant-mask.png)|![Result](/images/completion/elephant-result.png)|
+|![Input](/images/completion/mountain.jpg)|![Mask](/images/completion/mountain-mask.png)|![Result](/images/completion/mountain-result.png)|
+|![Input](/images/completion/pigeon.png)|![Mask](/images/completion/pigeon-mask.png)|![Result](/images/completion/pigeon-result.png)|
+|![Input](/images/completion/temple.png)|![Mask](/images/completion/temple-mask.png)|![Result](/images/completion/temple-result.png)|
+
+
+##References:
 
 [^1]: [Object Removal by Exemplar-Based Inpainting](http://research.microsoft.com/pubs/67273/criminisi_cvpr2003.pdf)
 [^2]: [Shift-Map Image Editing](http://www.vision.huji.ac.il/shiftmap/)
@@ -172,3 +187,4 @@ References:
 [^8]: [Statistics of Patch Offsets for Image Completion](http://research.microsoft.com/en-us/um/people/kahe/eccv12/index.html)
 [^9]: [PatchMatch: A Randomized Correspondence Algorithm for Structural Image Editing](http://gfx.cs.princeton.edu/pubs/Barnes_2009_PAR/index.php)
 [^10]: [Poisson Image Editing](http://cs.uky.edu/~jacobs/classes/2010_photo/readings/PoissonImageEditing.pdf)
+[^11]: [Image Completion with Structure Propagation](http://research.microsoft.com/en-us/um/people/jiansun/papers/imagecompletion_siggraph05.pdf)

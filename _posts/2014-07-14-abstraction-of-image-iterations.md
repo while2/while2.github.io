@@ -1,9 +1,10 @@
 ---
 layout: post
-tags: c++ vision images
+tags: c++ image-processing
 categories: code
 title: Abstraction of Image Iterations
 abstract: This post describes the idea of my image iteration methods. Which relief a lot of work when doing image processing. The code was hosted <a href="https://github.com/while2/his">here</a>.
+
 ---
 While coding for image processing, I often need to write 2d iterations like this:
 

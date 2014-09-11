@@ -1,8 +1,9 @@
 ---
 layout: post
-tags: c++ linked-list sort
+tags: c++ linked-list sort algorithm
 categories: code
 abstract: This post shows how to swap two nodes in a Single-Linked-List and how to apply quick sort for lists. Although it's not recommended.
+
 ---
 
 Quick sort is a good algorithm that every notebook take it as an example for Divide and Conquer. Conquer means to recursively call itself, while Division is carried out by partition.

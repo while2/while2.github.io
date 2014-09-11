@@ -1,9 +1,10 @@
 ---
 layout: post
-tags: c++ vision images
+tags: c++ image-processing
 categories: code
 title: Abstraction of 2d Filter
 abstract: This post explained the details of function filter in <a href='https://github.com/while2/his/blob/master/ImageProcessing/Filter.hpp'>his lib</a>, which provides a convenient interface to define linear, non-linear, and even non-numerical filters.
+
 ---
 With the convenience of [abstraction of iterations]({% post_url 2014-07-14-abstraction-of-image-iterations %}), I felt necessary abstract filter with similar technics.
 

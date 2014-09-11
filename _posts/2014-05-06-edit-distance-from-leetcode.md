@@ -1,7 +1,8 @@
 ---
 layout: post
-tags: c++ dynamic-programming leetcode online-judge
+tags: c++ dynamic-programming leetcode online-judge algorithm
 categories: code
+
 ---
 
 [LeetCode上一个题](http://oj.leetcode.com/problems/edit-distance/): 求两个字符串之间的编辑距离，意思是通过单个字母的添加/删除/替换操作，把一个字符串word1变成另一个字符串word2，求最小操作次数。

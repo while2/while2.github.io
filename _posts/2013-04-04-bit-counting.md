@@ -1,6 +1,6 @@
 ---
 layout: post
-tags: c++ bit-manipulating
+tags: c++ bit-manipulating algorithm
 categories: code
 abstract: 求一个二进制数内1出现的次数，经常被用来考人。除了最经典的减一与运算的方法，还可以利用位间的并行性，以及更加诡异的方法。
 ---
