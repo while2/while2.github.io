@@ -5,7 +5,16 @@ categories: code
 
 ---
 
-# 1. Header
+Programming is a process of decision making. There are many ways to make thing work, but most of them are bad ways. The code of coding helps to define good from bad.
+
+The following rules are my own understanding for ZJUCVG daily research coding, in which case Visual Studio on Windows is the main environment. Some of them may not apply to other circumstances. But remember the key idea is to make things easier, not only for now, but also for the future(flexibility).
+
+I borrow some of the rules from [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html), but I can agree no more than 2/3 of them.
+More over, rather than make forcible rules, I would like to trust people. Rules should be a reference for peer-review. Just like the Jury System in a Common Law country.
+
+## 1. Header
+
+Differences between .h and .cpp
 
 <table width = "100%">
 <tbody>
@@ -46,10 +55,10 @@ To prevent multiple inclusion.
 <tr>
 <td>
 {% highlight cpp %}
-#ifndef FOO_BAR_BAZ_H
-#define FOO_BAR_BAZ_H
+#ifndef PROJ1_DIR1_DIR2_H
+#define PROJ1_DIR1_DIR2_H
 ...
-#endif // FOO_BAR_BAZ_H
+#endif // PROJ1_DIR1_DIR2_H
 {% endhighlight %}
 </td>
 <td>
@@ -86,7 +95,7 @@ Clear your dependencies.
 {% highlight cpp %}
 #pragma once
 
-struct A {
+class A {
 
     ...
 
@@ -99,7 +108,7 @@ struct A {
 #pragma once
 
 #include "A.h"
-struct B {
+class B {
     ...
     A a;
     ...
@@ -112,7 +121,7 @@ struct B {
 
 #include "A.h"	
 #include "B.h"
-struct C {
+class C {
     A a;
     B b;
 };
@@ -123,7 +132,8 @@ struct C {
 </table>
 
 Also include A.h in C.h because it depends on A. Even if B.h has already included A.h. Do it rightly not just some way it works.
-One may remove B from C, or A from B. In the latter case, the change of B causes compile error of C, that's terrible in large projects.
+
+One may remove B from C later, or A from B. In the latter case, the change of B causes compile error of C, that's terrible in large projects.
 
 ### 1.3 Decoupling
 Do not include unnecessary files.
@@ -132,14 +142,14 @@ Do not include unnecessary files.
 
 {% highlight cpp %}
 class D;
-struct C {
+class C {
     ...
     D *d;
     ...
 };
 {% endhighlight %}
 
-> A pointer is merely a number unless you need to interpret it. Until then, you don't need to know what the class D looks like.
+> A pointer is merely a number unless you need to interpret it. Until then, you don't need to know what the class looks like.
 
 #### Hide implementations
 
@@ -152,7 +162,7 @@ struct C {
 #pragma once
 #include "Input.h"
 #include "Output.h"
-struct Solver {
+class Solver {
     ...
     Output solve(Input input);
     ...
@@ -161,8 +171,8 @@ struct Solver {
 </td>
 <td>
 {% highlight cpp %}
-#pragma once
 #include "Solver.h"
+
 #include <Eigen>
 #include <GCO>
 Output Solver::solve(Input input)
@@ -175,7 +185,7 @@ Output Solver::solve(Input input)
 </tbody>
 </table>
 
-# 2. Classes
+## 2. Classes
 
 ### 2.1 RAII
 
@@ -186,6 +196,8 @@ All for one and one for all. __Copy Constructor__, __Assignment operator__ and _
 A default constructor will initialize all members with their default constructors. Think a way to take the advantage.
 
 As long as the __resource__ means memory, the Three can be avoid. Think a way to use the default generated version. Use shared_ptr and vector.
+
+> Any time you are coding something sound basic, think about STL, do not reinvent the wheel, life is short after all.
 
 <table width = "100%">
 <tbody>
@@ -292,4 +304,198 @@ B::B(int size)
 </tr>
 </tbody>
 </table>
+
+### 2.2 Use initialization list
+<table width = "100%">
+<tbody>
+<tr>
+<td>
+{% highlight cpp %}
+class A
+{
+public:
+    A(int size);
+   
+private:
+    int m_number;
+    vector<int> m_numbers;
+};
+{% endhighlight %}
+</td>
+
+<td>
+{% highlight cpp %}
+A::A(int size)
+    :m_number(0)
+    ,m_numbers(size)
+{
+    
+    
+    ...
+    
+    
+}
+{% endhighlight %}
+</td>
+</tr>
+</tbody>
+</table>
+
+### 2.3 Use inheritance carefully
+
+Inheritance is a big thing. Think before using it. 
+Composition(has-a) is often more appropriate than inheritance(is-a).
+
+Make the dependency as local as possible.
+
+<table width = "100%">
+<tbody>
+<tr>
+<td> Local instance </td>
+<td> A member of pointer </td>
+<td> A member of instance </td>
+<td> Inheritance </td>
+</tr>
+<tr>
+<td>
+{% highlight cpp %}
+void B::method1()
+{
+    A a;
+    ...
+}
+void B::method2(A &a)
+{
+    ...
+}
+{% endhighlight %}
+</td>
+<td>
+{% highlight cpp %}
+class A;
+
+class B
+{
+    ...
+    
+private:
+    A *m_pa;
+};
+{% endhighlight %}
+</td>
+<td>
+{% highlight cpp %}
+#include "A.h"
+
+class B
+{
+    ...
+    
+private:
+    A m_a;
+};
+{% endhighlight %}
+</td>
+<td>
+{% highlight cpp %}
+#include "A.h"
+
+class B : public A
+{
+
+    ...
+
+
+};
+{% endhighlight %}
+</td>
+</tr>
+<tr>
+<td> Include A.h in B.cpp </td>
+<td> Declare A in B.h <br>
+	Include A.h in B.cpp </td>
+<td> Include A.h in B.h </td>
+<td> Include A.h in B.h <br>
+Unless <br>
+B::someMethodOfA() <br>
+is needed
+</td>
+</tr>
+</tbody>
+</table>
+
+> Polymorphism is an overestimated feature in C++.
+
+### 2.3 struct or class
+<table width = "100%">
+<tbody>
+<tr>
+<td>
+struct
+</td>
+<td>
+class
+</td>
+</tr>
+
+<tr>
+
+<td>
+{% highlight cpp %}
+struct A
+{
+
+
+    int member1;
+    
+    
+};
+{% endhighlight %}
+</td>
+
+<td>
+{% highlight cpp %}
+class A
+{
+public:
+    int GetMember1() const;
+    
+private:
+    int m_member1;
+};
+{% endhighlight %}
+</td>
+
+</tr>
+
+<tr>
+<td>
+For pure data structure. <br>
+No methods, inheritance. <br>
+Compatible with C style.
+</td>
+
+<td>
+When in class, do as classes do. <br>
+Declare members as private. <br>
+Use accessor if necessary. <br>
+Add a prefix to the member name.
+
+</td>
+
+</tr>
+</tbody>
+</table>
+
+
+## 3. Function
+
+### 3.1 Operator Overloading
+
+Never use it. Use function instead. Unless you have higher aesthetic ambitions and are not persuaded by the following:
+
+1. +,-,*,/ makes implication that the operator is efficient and bug free.
+2. Undistinguishable from build-in operators, hard to find.
+3. 
+
 
