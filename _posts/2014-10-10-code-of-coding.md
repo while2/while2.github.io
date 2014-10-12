@@ -12,42 +12,127 @@ The following rules are my own understanding for ZJUCVG daily research coding, i
 I borrow some of the rules from [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html), but I can agree no more than 2/3 of them.
 More over, rather than make forcible rules, I would like to trust people. Rules should be a reference for peer-review. Just like the Jury System in a Common Law country.
 
-## 1. Header
+## The Foundation
 
-Differences between .h and .cpp
+### Consistency comes first.
+Consistency provide a stable environment where your knowledge about the code style is reliable.
 
-<table width = "100%">
+There are many arbitrary rules, especially for naming, indenting, there's no reason prefer one to another. But no matter which way you choose, choose it all the time.
+
+### Don't Repeat Yourself
+
+Known as the **DRY** principle. Repeat is the hazard of inconsistency. What if you changed one of your copies and forget another?
+
+Exception: When the common code need to be customized for different users, repeat is acceptable. In this case the change of one is meant not to affect (inconsistency to) the other.
+
+> It is also possible to share common code, and abstract the differences with arguments, but this works only for sophisticated code. In research project, things are changed too quickly, copy &paste can be a better solution.
+
+### Scopes
+One truth about scope: Keep things as local as possible. Mortals made mistakes, there's no good to release bugs to an unnecessarily larger scope.
+
+As you can see in the following rules, more local you are, more freedom you have. On the other hand, the more global code you are dealing with, more careful you should be, in such cases a small change may cause catastrophe. Fortunately global code comes much less than local ones.
+
+$$
+\begin{align*}
+& stdafx.h  & global & \\
+& *.h		& non-member & \\
+&			& member  & \\
+
+& *.cpp		& static & \\
+&				& local & \\
+\end{align*}
+$$
+
+#### Global variables
+Don't use external variables. You can define configurations in a singleton class for all modules to access. For global constants, you can define it in the precompiled header.
+
+## Naming & Formatting
+
+Quote from Google C++ Style Guide:
+> The most important consistency rules are those that govern naming. The style of a name immediately informs us what sort of thing the named entity is: a type, a variable, a function, a constant, a macro, etc., without requiring us to search for the declaration of that entity. The pattern-matching engine in our brain relies a great deal on these naming rules.
+
+Like in an essay, most letters are lower case, reserve capital letters for rare names. (MACRO/Enum >> Function >> variable). Use underscore to split words when necessary.
+
+Avoid abbreviation unless it's necessary. When use abbreviations, comment at the right place, unless it's a commonsense that everybody knows.
+
+### MACRO / Enum
+Macros should be all capitals. Underscores can be used to split words.
+
+Enumerators are very close to MACROs, hence follow the same rule.
+
+### Function
+Function names start with a capital letter and have a capital letter for each new word. No underscores are needed.
+
+The name should be verb, describing an action.
+
+### Variable
+Variable names should be a none in lower case, use underscore to split words. Add a prefix `m_` for class member functions.
+
+Exceptions:
+Some words are not comfortable to be translated into lower cases. In this case capital letters are acceptable.
+
+In research papers, there are capital variables such as $$X = RT*x$$, to keep it consistent, it is also acceptable to use variable named `RT`. In a certain context, the name `RT` is as expressive as the name `rotation_and_translate` and is much better than `camera_pose`.
+
+### auto
+Use auto only for local variables, when the type deducing is straightforward. `for (auto it = my_vector.begin(); ...)` is encouraged.
+
+### Code block
+There two styles to write an if (or for/while) block.
+<table>
 <tbody>
-<tr><td> .h </td><td> .cpp </td> </tr>
 <tr>
 <td>
-What can I do?<br>
+{% highlight cpp %}
+if (a == b) {
+
+...
+}
+{% endhighlight %}
 </td>
 <td>
-How to do it?<br>
-</td>
-</tr>
-<tr>
-<td>
-Precompile (Expanded to text.)
-</td>
-<td>
-Compile (to Binary, .obj in VC.)
-</td>
-</tr>
-<tr>
-<td>
-Affect all files include it. <br>
-Be more careful.<br>
-</td>
-<td>
-Local.
+{% highlight cpp %}
+if (a == b) 
+{
+...
+}
+{% endhighlight %}
 </td>
 </tr>
 </tbody>
 </table>
 
-### 1.1 #pragma once
+Use the second one, unless you are working on a project that following the first style (consistency comes first). Here is the reason:
+1. The braces define a block of code, it can be used without condition check or function definitions. In this case, it is impossible to follow the first style. To be consistent, always use the second one.
+2. The second style is symmetric and makes it easier to check the brace pairing.
+3. And a bonus is that when you are debugging, you can simply comment out the if line to skip the condition check.
+
+### Comments
+Code is the best comment. Don't use comment unless it's necessary. Comment breaks the DRY principle. You repeat your idea twice, once in the code and once in the comment. When you change your code, can you remember to update the comment?
+
+Put your comment at the right place, according the scope of the code you are commenting about.
+
+1. For local expressions, comment close to the considering code.
+2. To describe a function, comment before the declaration(if you are to explain the interface) or definition(to explain the implementation).
+3. To describe a bunch of functions, or a class, comment at the beginning of the .h / .cpp file for interface / implementation.
+
+Use `//` at the end of lines, `/*  */` for multiple lines.
+
+## Header Files
+
+Differences between .h and .cpp
+
+$$
+\begin{align*}
+& .h & .cpp \\
+& \text{What can I do?} & \text{How to do it?} \\
+& \text{Interface} & \text{Implementation} \\
+& \text{Precompile (to text).} & \text{Compile (to Binary).} \\
+& \text{Affect all files including it.} & \text{Local.} \\
+& \text{Be more careful.} & \\
+\end{align*}
+$$
+
+### #pragma once
 To prevent multiple inclusion.
 
 <table width = "100%">
@@ -84,8 +169,8 @@ Can be generated by Visual Studio.
 </tbody>
 </table>
 
-### 1.2 Self-contained
-Clear your dependencies.
+### Self-contained
+Make sure your header files are completed and 'compilable'. It should pass the compile when included by an empty cpp(precompiled headers are allowed).
 
 <table width = "100%">
 <tbody>
@@ -131,12 +216,12 @@ class C {
 </tbody>
 </table>
 
-Also include A.h in C.h because it depends on A. Even if B.h has already included A.h. Do it rightly not just some way it works.
+Also include A.h in C.h because it depends on A. Even if B.h has already included A.h. Otherwise B.h does not satisfy the 'compilable' rule.
 
 One may remove B from C later, or A from B. In the latter case, the change of B causes compile error of C, that's terrible in large projects.
 
-### 1.3 Decoupling
-Do not include unnecessary files.
+### Decoupling
+Remove unnecessary includes from .h files. (As local as possible).
 
 #### Forward declaration
 
@@ -185,9 +270,26 @@ Output Solver::solve(Input input)
 </tbody>
 </table>
 
-## 2. Classes
+## Function
 
-### 2.1 RAII
+### Keep functions short
+
+If you are writing a long function, you may want to split it. One function means just 'one function'.
+
+If your function takes too much arguments, maybe it's a sign. Use a struct to pack all them all, or create a class with multiple `Init()` methods and a `Run()`.
+
+### Operator Overloading
+
+Never use it. Use functions instead. Unless you have higher aesthetic ambitions and are not persuaded by the following:
+
+1. +,-,*,/ makes implication that the operator is efficient and bug free, can you guarantee that?
+2. Undistinguishable from build-in operators, hard to find.
+
+> Remember you have human readers other than compilers.
+
+## Classes
+
+### RAII
 
 Resource acquisition is initialization. (Uninitialized << Initialized << Default initialization).
 
@@ -195,9 +297,7 @@ All for one and one for all. __Copy Constructor__, __Assignment operator__ and _
 
 A default constructor will initialize all members with their default constructors. Think a way to take the advantage.
 
-As long as the __resource__ means memory, the Three can be avoid. Think a way to use the default generated version. Use shared_ptr and vector.
-
-> Any time you are coding something sound basic, think about STL, do not reinvent the wheel, life is short after all.
+As long as the __resource__ means memory, the Three can be avoid. Think a way to use the default generated version. Use shared_ptr and vector. It's not easy to write a robust constructor for all conditions, have you thought about thread safe, no memory exceptions? Well, STL have. Do not reinvent the wheel, life is short after all.
 
 <table width = "100%">
 <tbody>
@@ -305,7 +405,7 @@ B::B(int size)
 </tbody>
 </table>
 
-### 2.2 Use initialization list
+### Use initialization list
 <table width = "100%">
 <tbody>
 <tr>
@@ -330,7 +430,6 @@ A::A(int size)
     ,m_numbers(size)
 {
     
-    
     ...
     
     
@@ -341,9 +440,15 @@ A::A(int size)
 </tbody>
 </table>
 
-### 2.3 Use inheritance carefully
+### Avoid Complicated constructors
 
-Inheritance is a big thing. Think before using it. 
+Put complicated initialization out of the constructor. Initialize the class to a special state, and call a explicit `Init()` method later. Keep your constructor efficient and exception free. In most cases, initialization list is sufficient. 
+
+Do not use polymorphism in constructors before the virtual function table was initialized.
+
+### Use inheritance carefully
+
+Inheritance is a big thing, think before using it. 
 Composition(has-a) is often more appropriate than inheritance(is-a).
 
 Make the dependency as local as possible.
@@ -426,7 +531,7 @@ is needed
 
 > Polymorphism is an overestimated feature in C++.
 
-### 2.3 struct or class
+### struct or class
 <table width = "100%">
 <tbody>
 <tr>
@@ -487,15 +592,18 @@ Add a prefix to the member name.
 </tbody>
 </table>
 
+### Explicit Constructors
 
-## 3. Function
+A constructor with a single parameter can be used as a convertor. If you don't mean it, forbid it.
+Use keyword `explicit` to prevent implicit conversions. 
 
-### 3.1 Operator Overloading
+{% highlight cpp %}
+class A
+{
+public:
+    explicit A(int size);
+};
 
-Never use it. Use function instead. Unless you have higher aesthetic ambitions and are not persuaded by the following:
-
-1. +,-,*,/ makes implication that the operator is efficient and bug free.
-2. Undistinguishable from build-in operators, hard to find.
-3. 
-
-
+void foo(A a);
+foo(10); // Compile Error
+{% endhighlight %}
