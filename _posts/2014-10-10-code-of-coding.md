@@ -2,17 +2,18 @@
 layout: post
 tags: c++ 
 categories: code
+abstract: Programming is a process of decision making. There are many ways to get things work, but most of them are bad ways. The code of coding helps to define good from bad. This is a draft of ZJUCVG C++ style guide.
 
 ---
 
-Programming is a process of decision making. There are many ways to make thing work, but most of them are bad ways. The code of coding helps to define good from bad.
+Programming is a process of decision making. There are many ways to get things work, but most of them are bad ways. The code of coding helps to define good from bad.
 
-The following rules are my own understanding for ZJUCVG daily research coding, in which case Visual Studio on Windows is the main environment. Some of them may not apply to other circumstances. But remember the key idea is to make things easier, not only for now, but also for the future(flexibility).
+The following rules are my own understanding for ZJUCVG daily research coding, in which case Visual Studio on Windows is the main environment. Some of them may not apply to other circumstances. But remember [The Foundations](#the-foundations) are the same.
 
 I borrow some of the rules from [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html), but I can agree no more than 2/3 of them.
 More over, rather than make forcible rules, I would like to trust people. Rules should be a reference for peer-review. Just like the Jury System in a Common Law country.
 
-## The Foundation
+## The Foundations
 
 ### Consistency comes first.
 Consistency provide a stable environment where your knowledge about the code style is reliable.
@@ -20,7 +21,6 @@ Consistency provide a stable environment where your knowledge about the code sty
 There are many arbitrary rules, especially for naming, indenting, there's no reason prefer one to another. But no matter which way you choose, choose it all the time.
 
 ### Don't Repeat Yourself
-
 Known as the **DRY** principle. Repeat is the hazard of inconsistency. What if you changed one of your copies and forget another?
 
 Exception: When the common code need to be customized for different users, repeat is acceptable. In this case the change of one is meant not to affect (inconsistency to) the other.
