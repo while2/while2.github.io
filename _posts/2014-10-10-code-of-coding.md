@@ -34,12 +34,11 @@ As you can see in the following rules, more local you are, more freedom you have
 
 $$
 \begin{align*}
-& stdafx.h  & global & \\
-& *.h		& non-member & \\
-&			& member  & \\
-
-& *.cpp		& static & \\
-&				& local & \\
+stdafx &.h		& \text{global} & \\
+* &.h				& \text{non-member} & \\
+  &				& \text{member}  & \\
+* &.cpp			& \text{static} & \\
+  &				& \text{local} & \\
 \end{align*}
 $$
 
@@ -270,7 +269,7 @@ Output Solver::solve(Input input)
 </tbody>
 </table>
 
-## Function
+## Functions
 
 ### Keep functions short
 
