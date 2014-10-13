@@ -8,17 +8,17 @@ abstract: Programming is a process of decision making. There are many ways to ge
 
 Programming is a process of decision making. There are many ways to get things work, but most of them are bad ways. The code of coding helps to define good from bad.
 
-The following rules are my own understanding for ZJUCVG daily research coding, in which case Visual Studio on Windows is the main environment. Some of them may not apply to other circumstances. But remember [The Foundations](#the-foundations) are the same.
+The following rules are my own understanding for ZJUCVG daily research coding, in which case Visual Studio on Windows is the main environment. Some of them may not apply to other circumstances. But remember [The Principle](#the-principle) are the same.
 
 I borrow some of the rules from [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.html), but I can agree no more than 2/3 of them.
 More over, rather than make forcible rules, I would like to trust people. Rules should be a reference for peer-review. Just like the Jury System in a Common Law country.
 
-## The Foundations
+## The Principle
 
 ### Consistency comes first.
 Consistency provide a stable environment where your knowledge about the code style is reliable.
 
-There are many arbitrary rules, especially for naming, indenting, there's no reason prefer one to another. But no matter which way you choose, choose it all the time.
+There are many arbitrary rules, especially for naming, indentation, there's no reason prefer one to another. But no matter which way you choose, choose it all the time.
 
 ### Don't Repeat Yourself
 Known as the **DRY** principle. Repeat is the hazard of inconsistency. What if you changed one of your copies and forget another?
@@ -27,7 +27,7 @@ Exception: When the common code need to be customized for different users, repea
 
 > It is also possible to share common code, and abstract the differences with arguments, but this works only for sophisticated code. In research project, things are changed too quickly, copy &paste can be a better solution.
 
-### Scopes
+### As local as possible
 One truth about scope: Keep things as local as possible. Mortals made mistakes, there's no good to release bugs to an unnecessarily larger scope.
 
 As you can see in the following rules, more local you are, more freedom you have. On the other hand, the more global code you are dealing with, more careful you should be, in such cases a small change may cause catastrophe. Fortunately global code comes much less than local ones.
@@ -48,6 +48,7 @@ Don't use external variables. You can define configurations in a singleton class
 ## Naming & Formatting
 
 Quote from Google C++ Style Guide:
+
 > The most important consistency rules are those that govern naming. The style of a name immediately informs us what sort of thing the named entity is: a type, a variable, a function, a constant, a macro, etc., without requiring us to search for the declaration of that entity. The pattern-matching engine in our brain relies a great deal on these naming rules.
 
 Like in an essay, most letters are lower case, reserve capital letters for rare names. (MACRO/Enum >> Function >> variable). Use underscore to split words when necessary.
@@ -75,36 +76,6 @@ In research papers, there are capital variables such as $$X = RT*x$$, to keep it
 ### auto
 Use auto only for local variables, when the type deducing is straightforward. `for (auto it = my_vector.begin(); ...)` is encouraged.
 
-### Code block
-There two styles to write an if (or for/while) block.
-<table>
-<tbody>
-<tr>
-<td>
-{% highlight cpp %}
-if (a == b) {
-
-...
-}
-{% endhighlight %}
-</td>
-<td>
-{% highlight cpp %}
-if (a == b) 
-{
-...
-}
-{% endhighlight %}
-</td>
-</tr>
-</tbody>
-</table>
-
-Use the second one, unless you are working on a project that following the first style (consistency comes first). Here is the reason:
-1. The braces define a block of code, it can be used without condition check or function definitions. In this case, it is impossible to follow the first style. To be consistent, always use the second one.
-2. The second style is symmetric and makes it easier to check the brace pairing.
-3. And a bonus is that when you are debugging, you can simply comment out the if line to skip the condition check.
-
 ### Comments
 Code is the best comment. Don't use comment unless it's necessary. Comment breaks the DRY principle. You repeat your idea twice, once in the code and once in the comment. When you change your code, can you remember to update the comment?
 
@@ -118,11 +89,11 @@ Use `//` at the end of lines, `/*  */` for multiple lines.
 
 ## Header Files
 
-Differences between .h and .cpp
+Differences between headers and source files.
 
 $$
 \begin{align*}
-& .h & .cpp \\
+& *.h & .cpp, *.cc \\
 & \text{What can I do?} & \text{How to do it?} \\
 & \text{Interface} & \text{Implementation} \\
 & \text{Precompile (to text).} & \text{Compile (to Binary).} \\
@@ -269,6 +240,11 @@ Output Solver::solve(Input input)
 </tbody>
 </table>
 
+### using namespace
+Never import names with `using namespace` in header files. It causes name pollution. However, it's acceptable to import namespace std in precompiled files since it's a commonsense known by the entire project. 
+
+When user defined names conflict with libs, use a namespace wrapper. If conflict happens between 3rd party libs, congratulations! As far as I know, there's no good solutions for C++, you can better encapsulate one of them with your own interfaces.
+
 ## Functions
 
 ### Keep functions short
@@ -286,17 +262,98 @@ Never use it. Use functions instead. Unless you have higher aesthetic ambitions 
 
 > Remember you have human readers other than compilers.
 
+### Lambda expression
+Lambda expression is a new feature of C++11, supported by Visual Studio since VC11(VS 2010). As an anonymous function, lambda expression is more local than functions.
+
+## Control flow
+
+### Code block
+There two styles to write an if (or for/while) block.
+<table>
+<tbody>
+<tr>
+<td>
+{% highlight cpp %}
+if (a == b) {
+
+...
+}
+{% endhighlight %}
+</td>
+<td>
+{% highlight cpp %}
+if (a == b) 
+{
+...
+}
+{% endhighlight %}
+</td>
+</tr>
+</tbody>
+</table>
+
+Use the second one, unless you are working on a project that following the first style (consistency comes first). Here is the reason:
+1. The braces define a block of code, it can be used without condition check or function definitions. In this case, it is impossible to follow the first style. To be consistent, always use the second one.
+2. The second style is symmetric and makes it easier to check the brace pairing.
+3. And a bonus is that when you are debugging, you can simply comment out the if line to skip the condition check.
+
+### goto
+`goto` is acceptable but should not be overused.
+Since keyword `break` can only jump out from the inner iteration, `goto` is useful in such cases. An alternative way is to set and check flags. `goto` can be much more clear than flags.
+
+<table width = "100%">
+<tbody>
+<tr><td> flag </td><td> goto </td> </tr>
+<tr>
+<td>
+{% highlight cpp %}
+bool finished = false;
+for (int y = 0; y < rows && !finished; ++y)
+{
+    for (int x = 0; x < cols && !finished; ++x)
+    {
+        if (...)
+            finished = true;
+    }
+}
+
+    ...
+{% endhighlight %}
+</td>
+<td>
+{% highlight cpp %}
+for (int y = 0; y < rows; ++y)
+{
+    for (int x = 0; x < cols; ++x)
+    {
+        if (...)
+            goto finished;
+    }
+}
+
+finished:
+    ...
+{% endhighlight %}
+</td>
+</tr>
+</tbody>
+</table>
+
+When you get out of a code block, the local variables will be destructed automatically, even if you jumped out with `goto`.
+
+There's no indent before the label.
+
 ## Classes
 
 ### RAII
 
 Resource acquisition is initialization. (Uninitialized << Initialized << Default initialization).
 
-All for one and one for all. __Copy Constructor__, __Assignment operator__ and __Destructor__, use them all or none, none is better.
+All for one and one for all. **Copy Constructor**, **Assignment operator** and **Destructor**, use them all or none, none is better.
 
 A default constructor will initialize all members with their default constructors. Think a way to take the advantage.
 
-As long as the __resource__ means memory, the Three can be avoid. Think a way to use the default generated version. Use shared_ptr and vector. It's not easy to write a robust constructor for all conditions, have you thought about thread safe, no memory exceptions? Well, STL have. Do not reinvent the wheel, life is short after all.
+As long as the **resource** means memory, the Three can be avoid. Think a way to use the default generated version. Use shared_ptr and vector. It's not easy to write a robust constructor for all conditions, have you thought about thread safe, no memory exceptions? Well, STL have. Do not reinvent the wheel, life is short after all.
 
 <table width = "100%">
 <tbody>
