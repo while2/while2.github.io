@@ -578,14 +578,14 @@ class B : public A
 <td> Include A.h in B.h </td>
 <td> Include A.h in B.h <br>
 Unless <br>
-B::someMethodOfA() <br>
+B::SomeMethodOfA() <br>
 is needed
 </td>
 </tr>
 </tbody>
 </table>
 
-> Polymorphism is an overestimated feature in C++.
+A is getting more and more global in the previous four snippets of code. With public inheritance, A's methods exposed to all clients of B. On the other hand, private inheritance is almost the same as composition.
 
 ### struct or class
 <table width = "100%">
