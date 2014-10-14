@@ -585,7 +585,8 @@ is needed
 </tbody>
 </table>
 
-A is getting more and more global in the previous four snippets of code. With public inheritance, A's methods exposed to all clients of B. On the other hand, private inheritance is almost the same as composition.
+A is getting more and more global in the previous four snippets of code. With public inheritance, A's methods exposed to all clients of B. On the other hand, private inheritance is almost the same as composition, which makes it useless in most cases.
+
 
 ### struct or class
 <table width = "100%">
