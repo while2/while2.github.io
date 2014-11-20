@@ -57,13 +57,24 @@ case class NonEmpty(left: Tree, key: Int, right: Tree) extends Tree {
 {% endhighlight %}
 
 The method `rotate_right` says: Hey Scala, when you see something like the following left structure, give me another tree like the right one. Quite different from C++ styles.
-<pre>
-          +ll                 +ll
-     +lk--|              lk---|
-     |    +lr     =>          |      +lr
-key--|                        +key---|
-     +right                          +right
+
+<div style="overflow: hidden;">
+<pre style="float:left">
+          +ll
+     +lk--|  
+     |    +lr
+key--|     
+     +right
 </pre>
+<pre style="float:left">
+          +ll
+     lk---|
+=>        |      +lr
+          +key---|
+                 +right
+</pre>
+</div>
+
 The diagram was rotated by 90º, with the left child above the right one, to be consistent with my [display()](https://github.com/while2/bs-tree/blob/master/AVLTree.scala) function.
 
 The balance code is also straightforward, almost exactly translated from the textbook[^2].
@@ -107,41 +118,61 @@ They color the nodes with Red and Black. Only black nodes count for the height o
 3. Red nodes have black children.
 4. For all nodes, the black height are the same.
 
-After insertion there might be 2 neighboring Red nodes, which breaks the property of Red-Black Trees. But there are only 4 possible structures as the following diagram listed. They are also corresponding to the 4 cases in the code. For all of them, the solution is the same.
+After insertion there might be 2 neighboring Red nodes, which breaks the property of Red-Black Trees. But there are only 4 possible structures as the following diagram listed. They are also corresponding to the 4 cases in the code.
 
-<pre>
-                    +a
+<div style="overflow: hidden; width: 80%">
+<pre style="float:left">
+1.                  +a
              +x(R)--|
              |      +b
       +y(R)--|
       |      +c
 z(B)--|
       +d
-      
-      +a
-x(B)--|
-      |      +b
-      +y(R)--|
-             |      +c                           +a
-             +z(R)--|                     +x(B)--|
-                    +d                    |      +b
-                             =>     y(R)--|
-             +a                           |      +c             
-      +x(R)--|                            +z(B)--|
-      |      |      +b                           +d
+</pre>
+<pre style="float:right">
+3.           +a       
+      +x(R)--|        
+      |      |      +b
       |      +y(R)--|
       |             +c
 z(B)--|
       +d
-      
+</pre>
+</div>
+<div style="overflow: hidden; width: 80%">
+<pre style="float:left">
+      +a
+x(B)--|
+      |      +b
+      +y(R)--|
+             |      +c
+             +z(R)--| 
+2.                  +d
+</pre>
+<pre style="float:right">
       +a
 x(B)--|
       |             +b
       |      +y(R)--|
       |      |      +c
       +z(R)--|
+4.           +d
+</pre>
+</div>
+
+For all of them, the solution is the same:
+<pre>
+fixed.       
+             +a
+      +x(B)--|
+      |      +b
+y(R)--|
+      |      +c             
+      +z(B)--|
              +d
 </pre>
+
 A simple pattern match can fix the broken property:
 {% highlight scala %}
   def fix_ins() = {
