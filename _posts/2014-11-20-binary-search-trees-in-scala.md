@@ -58,7 +58,7 @@ case class NonEmpty(left: Tree, key: Int, right: Tree) extends Tree {
 
 The method `rotate_right` says: Hey Scala, when you see something like the following left structure, give me another tree like the right one. Quite different from C++ styles.
 
-<div style="overflow: hidden; width: 50%">
+<div style="overflow: hidden; max-width: 400px">
 <pre style="float:left">
           +ll
      +lk--|  
@@ -120,7 +120,7 @@ They color the nodes with Red and Black. Only black nodes count for the height o
 
 After insertion there might be 2 neighboring Red nodes, which breaks the property of Red-Black Trees. But there are only 4 possible structures as the following diagram listed. They are also corresponding to the 4 cases in the code and the diagrams in the book[^2].
 
-<div style="overflow: hidden; width: 60%">
+<div style="overflow: hidden; max-width: 450px">
 <pre style="float:left">
 1.                  +a
              +x(R)--|
@@ -140,7 +140,7 @@ z(B)--|
       +d
 </pre>
 </div>
-<div style="overflow: hidden; width: 60%">
+<div style="overflow: hidden; max-width: 450px">
 <pre style="float:left">
       +a
 x(B)--|
