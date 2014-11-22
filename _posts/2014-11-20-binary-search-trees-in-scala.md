@@ -2,10 +2,12 @@
 layout: post
 tags: scala avl-tree rb-tree 
 categories: code
+abstract: This article is about the functional definitions for AVL-Tree and Red-Black-Tree. I code it in scala and the code can be found <a href="https://github.com/while2/bs-tree">here</a>.
 
 ---
 
-The complete code can be found here[^1].
+This article is about the functional definitions for AVL-Tree and Red-Black-Tree.
+I code it in scala and the code can be found here[^1].
 
 Functional programming languages are usually more about definition than implementation, which makes them perfect to demonstrate data structures.
 
@@ -42,16 +44,12 @@ With the pattern match mechanism, it comes quite straightforward to rotate and b
 
 {% highlight Scala %}
 case class NonEmpty(left: Tree, key: Int, right: Tree) extends Tree {
-  def rotate_left() = {
-    right match {
-      case NonEmpty(rl, rk, rr) => NonEmpty(NonEmpty(left, key, rl), rk, rr)
-    }
+  def rotate_left() = right match {
+    case NonEmpty(rl, rk, rr) => NonEmpty(NonEmpty(left, key, rl), rk, rr)
   }
-  
-  def rotate_right() = {
-    left match {
-      case NonEmpty(ll, lk, lr) => NonEmpty(ll, lk, NonEmpty(lr, key, right))
-    }
+
+  def rotate_right() = left match {
+    case NonEmpty(ll, lk, lr) => NonEmpty(ll, lk, NonEmpty(lr, key, right))
   }
 }
 {% endhighlight %}
@@ -81,22 +79,19 @@ The balance code is also straightforward, almost exactly translated from the tex
 
 {% highlight Scala %}
   def balance() = {
-    if (left.height > right.height + 1) {
-      left match {
-        case NonEmpty(ll, lk, lr) => {
-          if (ll.height >= lr.height) rotate_right
-          else NonEmpty(left.rotate_left, key, right).rotate_right
-        }
+    if (left.height > right.height + 1) left match {
+      case NonEmpty(ll, lk, lr) => {
+        if (ll.height >= lr.height) rotate_right
+        else NonEmpty(left.rotate_left, key, right).rotate_right
       }
-    } else if (left.height + 1 < right.height) {
-      right match {
-        case NonEmpty(rl, rk, rr) => {
-          if (rl.height <= rr.height) rotate_left
-          else NonEmpty(left, key, right.rotate_right).rotate_left
-        }
+    }
+    else if (left.height + 1 < right.height) right match {
+      case NonEmpty(rl, rk, rr) => {
+        if (rl.height <= rr.height) rotate_left
+        else NonEmpty(left, key, right.rotate_right).rotate_left
       }
-    } else
-      this
+    }
+    else this
   }
 {% endhighlight %}
 When the left child is more than 2 levels higher than the right one, denote the left child as (ll, lk, lr), the left child's left child, left child's key, left child's right child.
@@ -175,18 +170,16 @@ y(R)--|
 
 A simple pattern match can fix the broken property:
 {% highlight scala %}
-  def fix_ins() = {
-    this match {
-      case NonEmpty(NonEmpty(NonEmpty(a, x, R, b), y, R, c), z, B, d) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
-      case NonEmpty(a, x, B, NonEmpty(b, y, R, NonEmpty(c, z, R, d))) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
-      case NonEmpty(NonEmpty(a, x, R, NonEmpty(b, y, R, c)), z, B, d) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
-      case NonEmpty(a, x, B, NonEmpty(NonEmpty(b, y, R, c), z, R, d)) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
-      case _ => this
-    }
-  }
+def fix_ins() = this match {
+  case NonEmpty(NonEmpty(NonEmpty(a, x, R, b), y, R, c), z, B, d) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
+  case NonEmpty(a, x, B, NonEmpty(b, y, R, NonEmpty(c, z, R, d))) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
+  case NonEmpty(NonEmpty(a, x, R, NonEmpty(b, y, R, c)), z, B, d) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
+  case NonEmpty(a, x, B, NonEmpty(NonEmpty(b, y, R, c), z, R, d)) => NonEmpty(NonEmpty(a, x, B, b), y, R, NonEmpty(c, z, B, d))
+  case _ => this
+}
 {% endhighlight %}
 
-The deletion of Red-Black-Tree is a little bit complicated, I have not implement it yet.
+The deletion of Red-Black-Tree is a little bit complicated, but this book[^2] described it clearly. My code[^1] also works.
 
 [^1]: [https://github.com/while2/bs-tree](https://github.com/while2/bs-tree)
 [^2]: [Elementary Algorithms](https://sites.google.com/site/algoxy/home)
