@@ -3,6 +3,7 @@ layout: page
 ---
 
 [Download PDF](/files/HeYi_ZJU.pdf)
+[下载中文简历](/files/HeYi_ZJU_cn.pdf)
 
 ##He YiMale \| 1987-03-09 \| (+86)18868105691 \| [heyi.pub@gmail.com](heyi.pub@gmail.com) \| [while2.github.io](http://while2.github.io)####Experience:
 2012.4 – __*2015.3*__ ... M.S. in State Key Lab of CAD&CG, Zhejiang University, China2009.6 – 2010.1 ... Fulltime developer in Virtuos Games, China
