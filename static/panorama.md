@@ -3,14 +3,44 @@ layout: page
 
 ---
 
-<p align="center">Panorama with 14 wide-baseline images</p>
+### An orthogonal street view
+![](/images/panorama/street1-cn.jpg)
+
+(a) Inputs. (b) Autostitch[^1]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
+
+---
+
+### Another orthogonal street view
+![](/images/panorama/street2.jpg)
+
+(a) Inputs. (b) Autostitch[^1]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
+
+---
+
+### Compare different regularity terms
+![](/images/panorama/smoothness-term.jpg)
+
+(a) Inputs. (b) Content-Preserving Warp(SIGGRAPH'09)[^3]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
+
+---
+
+### A single viewpoint example with radial distortion.
+![](/images/panorama/out.jpg)
+
+(a) Inputs. (b) Autostitch[^1]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
+
+---
+
+### Seamless Composition for misaligned pixels.
+![](/images/panorama/desktoplong-cn.jpg)
+
+(a) Graphcut result with traditional energy function[^4]. (b) Graphcut result with our energy function. (c) Our final result.
+
+---
 
 
-<a href="/images/panorama/street1-ours.png"><img src="/images/panorama/street1-ours-small.png" width="100%"></a>
-
-<p align="center">Our result</p>
-
-
-<a href="/images/panorama/street1-apap.png"><img src="/images/panorama/street1-apap-small.png" width="100%"></a>
-
-<p align="center">APAP (TPAMI'14)</p>
+### References:
+[^1]: [Autostitch.](http://www.cs.bath.ac.uk/brown/autostitch/autostitch.html)
+[^2]: [As-Projective-As-Possible Image Stitching with Moving DLT.](http://cs.adelaide.edu.au/~jzaragoza/doku.php?id=mdlt)
+[^3]: [Content-Preserving Warps for 3D Video Stabilization.](http://web.cecs.pdx.edu/~fliu/project/3dstab.htm)
+[^4]: [Graphcut Textures: Image and Video Synthesis Using Graph Cuts.](http://www.cc.gatech.edu/cpl/projects/graphcuttextures/)
