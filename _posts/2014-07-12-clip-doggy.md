@@ -1,6 +1,8 @@
 ---
 layout: post
 teaser: /images/doggy/teaser.JPG
+tag: clips
+category: For Fun
 
 ---
 
