@@ -16,7 +16,7 @@ layout: page
           {{ post.abstract }}
         {% endif %}
 
-        {% endfor %}
-
       </div>
+    {% endfor %}
+
 </ul>
