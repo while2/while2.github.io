@@ -9,11 +9,11 @@ layout: page
         <span>{{ post.date | date_to_string }}</span> &raquo; <a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title }}</a>
 
         {% if post.teaser %}
-          <a href="{{ post.url }}"><img src="{{ post.teaser }}" width="100%"></a>
+          <p><a href="{{ post.url }}"><img src="{{ post.teaser }}" width="100%"></a></p>
         {% endif %}
 
         {% if post.abstract %}
-          {{ post.abstract }}
+          <p>{{ post.abstract }}</p>
         {% endif %}
 
       </div>
