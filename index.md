@@ -10,12 +10,12 @@ layout: page
 
         {% if post.teaser %}
           <p><a href="{{ post.url }}"><img src="{{ post.teaser }}" width="100%"></a></p>
-          <hr>
+          <hr/>
         {% endif %}
 
         {% if post.abstract %}
           <p>{{ post.abstract }}</p>
-          <hr>
+          <hr/>
         {% endif %}
 
       </div>
