@@ -4,35 +4,35 @@ layout: page
 ---
 
 ### An orthogonal street view
-![](/images/panorama/street1-cn.jpg)
+![](/assets/images/panorama/street1-cn.jpg)
 
 (a) Inputs. (b) Autostitch[^1]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
 
 ---
 
 ### Another orthogonal street view
-![](/images/panorama/street2.jpg)
+![](/assets/images/panorama/street2.jpg)
 
 (a) Inputs. (b) Autostitch[^1]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
 
 ---
 
 ### Compare different regularity terms
-![](/images/panorama/smoothness-term.jpg)
+![](/assets/images/panorama/smoothness-term.jpg)
 
 (a) Inputs. (b) Content-Preserving Warp(SIGGRAPH'09)[^3]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
 
 ---
 
 ### A single viewpoint example with radial distortion.
-![](/images/panorama/out.jpg)
+![](/assets/images/panorama/out.jpg)
 
 (a) Inputs. (b) Autostitch[^1]. (c) APAP(TPAMI'14)[^2]. (d) Ours.
 
 ---
 
 ### Seamless Composition for misaligned pixels.
-![](/images/panorama/desktoplong-cn.jpg)
+![](/assets/images/panorama/desktoplong-cn.jpg)
 
 (a) Graphcut result with traditional energy function[^4]. (b) Graphcut result with our energy function. (c) Our final result.
 

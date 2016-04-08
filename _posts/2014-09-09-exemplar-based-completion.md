@@ -3,7 +3,7 @@ layout: post
 tags: image-processing image-completion
 categories: computer-vision
 title: A Review of Exemplar-based Image Completion
-abstract: For image editing, there are many reasons to reconstruct some missing contents from an image, to repair deterioration, remove undesirable objects etc. Exemplar-base algorithms use pixels from the same image to fill missing areas and achieved the state of art results. This post breifly reviews the history of exemplar-based methods, and ends up with a TPAMI'14 paper. <p><img src="/images/completion/bungee.jpg" width="20%"/> <img src="/images/completion/bungee-mask.png" width="20%"/> <img src="/images/completion/bungee-result.png" width="20%"/> <img src="/images/completion/bungee-label.png" width="20%"/></p>
+abstract: For image editing, there are many reasons to reconstruct some missing contents from an image, to repair deterioration, remove undesirable objects etc. Exemplar-base algorithms use pixels from the same image to fill missing areas and achieved the state of art results. This post breifly reviews the history of exemplar-based methods, and ends up with a TPAMI'14 paper. <p><img src="/assets/images/completion/bungee.jpg" width="20%"/> <img src="/assets/images/completion/bungee-mask.png" width="20%"/> <img src="/assets/images/completion/bungee-result.png" width="20%"/> <img src="/assets/images/completion/bungee-label.png" width="20%"/></p>
 
 ---
 
@@ -17,7 +17,7 @@ Exemplar-based methods use patches to find similar contents in the same image, a
 <a name="bungee"/>
 Following is a result of my implementation of an exemplar-based method based on TPAMI'14 paper[^8], the image is from another paper[^1].
 
-|![Input](/images/completion/bungee.jpg)|![Mask](/images/completion/bungee-mask.png)|![Result](/images/completion/bungee-result.png)|![Shift-Map](/images/completion/bungee-label.png)|
+|![Input](/assets/images/completion/bungee.jpg)|![Mask](/assets/images/completion/bungee-mask.png)|![Result](/assets/images/completion/bungee-result.png)|![Shift-Map](/assets/images/completion/bungee-label.png)|
 | :---: | :--: | :----: | :-------: |
 | Input | Mask | Result | Shift-Map |
 
@@ -30,13 +30,13 @@ Thus some problems are just impossible to solve in the patch level. That's why I
 ##Straightforward method
 A pioneer's method is usually straightforward. CVPR'03 paper [Object Removal by Exemplar-Based Inpainting][^1] used a greedy approach. In each iteration, a patch was selected at the boundary of the missing regions, hence there are pixels in this patch that are already known. These pixels can be used to find the most similar patch which contains all known pixels. Then copy this intact patch to the selected one, and replace the missing pixels.
 
-![Greedy](/images/completion/CVPR03-greedy.png)
+![Greedy](/assets/images/completion/CVPR03-greedy.png)
 
 In each iteration some of the missing pixels were filled. By defining priorities based on contour and gradient, this method fill holes from boundary to central part, like peeling an onion.
 
 Back to 2003, this was state of the art algorithm. It was simple, straightforward and works much better than PDE methods. But a greedy approach usually provides a suboptimal result. Moreover, I think this paper does not have a big picture. It seems right in every step, but did not give a mathematical explanation on what's going on behind. In Variational Method's view, what is the objective function to optimize?
 <a name="onion-peeling"/>
-![Bungee](/images/completion/CVPR03-bungee.png)
+![Bungee](/assets/images/completion/CVPR03-bungee.png)
 
 > Based on this, an interactive method[^11] was introduced to cope with structural contents. A curve was drawn to indicate the structure and dynamic programming was used to optimize the consistency of structural contents, also the searching space was largely reduced thanks to the manually work.
 
@@ -168,11 +168,11 @@ As shown in the optimal [Shift-Map](#bungee), there are only tens of shifts were
 
 | Input | Mask | Result |
 | :---: | :--: | :----: |
-|![Input](/images/completion/pumpkin.jpg)|![Mask](/images/completion/pumpkin-mask.png)|![Result](/images/completion/pumpkin-result.png)|
-|![Input](/images/completion/elephant.jpg)|![Mask](/images/completion/elephant-mask.png)|![Result](/images/completion/elephant-result.png)|
-|![Input](/images/completion/mountain.jpg)|![Mask](/images/completion/mountain-mask.png)|![Result](/images/completion/mountain-result.png)|
-|![Input](/images/completion/pigeon.png)|![Mask](/images/completion/pigeon-mask.png)|![Result](/images/completion/pigeon-result.png)|
-|![Input](/images/completion/temple.png)|![Mask](/images/completion/temple-mask.png)|![Result](/images/completion/temple-result.png)|
+|![Input](/assets/images/completion/pumpkin.jpg)|![Mask](/assets/images/completion/pumpkin-mask.png)|![Result](/assets/images/completion/pumpkin-result.png)|
+|![Input](/assets/images/completion/elephant.jpg)|![Mask](/assets/images/completion/elephant-mask.png)|![Result](/assets/images/completion/elephant-result.png)|
+|![Input](/assets/images/completion/mountain.jpg)|![Mask](/assets/images/completion/mountain-mask.png)|![Result](/assets/images/completion/mountain-result.png)|
+|![Input](/assets/images/completion/pigeon.png)|![Mask](/assets/images/completion/pigeon-mask.png)|![Result](/assets/images/completion/pigeon-result.png)|
+|![Input](/assets/images/completion/temple.png)|![Mask](/assets/images/completion/temple-mask.png)|![Result](/assets/images/completion/temple-result.png)|
 
 
 ##References:
