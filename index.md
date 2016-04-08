@@ -1,10 +1,9 @@
 ---
 layout: page
+description: // keep running
 ---
 
 {% include JB/setup %}
-
-<p>// keep running</p>
 <ul class="posts">
     {% for post in site.posts %}
       <div>
