@@ -32,10 +32,8 @@ function demo() {
       nodes.push(id2);
     }
     function delNode() {
-      if (nodes.length > 10) {
-        var r = Math.floor(Math.random() * nodes.length);
-        graph.delNode(nodes.splice(r, 1));
-      }
+      var r = Math.floor(Math.random() * nodes.length);
+      graph.delNode(nodes.splice(r, 1));
     }
     function addEdge() {
       var r1 = Math.floor(Math.random() * nodes.length);
@@ -49,9 +47,18 @@ function demo() {
       }
     }
 
-    delNode();
-    addNode();
-    addEdge();
+    var r = Math.floor(Math.random() * 3);
+    if (r === 0) {
+      addNode();
+    } else if (r === 1) {
+      if (nodes.length > 10) {
+        delNode();
+      } else {
+        addNode();
+      }
+    } else if (r === 2) {
+      addEdge();
+    }
     graph.redraw(1000);
   }
 
