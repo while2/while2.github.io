@@ -37,42 +37,36 @@ function d3graph (div, width, height, drawNode, drawEdge) {
   }
 
   function buildLayers(graph) {
-    var queue = [];
+    var layer = [];
     // first layer has no src
     for (var id in graph) {
       if (graph[id].src.length === 0) {
-        queue.push(id);
+        graph[id].level = 0;
+        layer.push(id);
       }
     }
-    queue.push(undefined);
 
-    var level = 0;
-    while (true) {
-      var id = queue.shift();
-      if (id === undefined) {
-        if (queue.length === 0) break;
-        level++;
-        queue.push(undefined);
-        continue;
-      }
-
-      var node = graph[id];
-      if (node.level === undefined) {
-        node.level = level;
-        node.dst.forEach(function (edge) {
-          queue.push(edge.dstId);
+    var layers = [layer];
+    for (var l = 1; layer.length > 0; l++) {
+      layer = layer.map(function (id) {
+        return graph[id].dst.map(function (edge) {
+          return edge.dstId;
         });
+      })
+      .reduce(function (set1, set2) {
+        set2.forEach(function (id) {
+          if (graph[id].level === undefined) {
+            graph[id].level = l;
+            set1.push(id);
+          }
+        })
+        return set1;
+      }, []);
+      if (layer.length > 0) {
+        layers.push(layer);
       }
     }
 
-    var layers = [];
-    for (var id in graph) {
-      var node = graph[id];
-      if (layers[node.level] === undefined) {
-        layers[node.level] = [];
-      }
-      layers[node.level].push(id);
-    }
     return layers;
   }
 
@@ -168,32 +162,47 @@ function d3graph (div, width, height, drawNode, drawEdge) {
     return edgeAnchors;
   }
 
+  var playing = false;
   function redraw(duration, ease) {
-    svg.selectAll('*').remove();
-
     var graph = buildGraph();
     var layers = buildLayers(graph);
     sortLayers(graph, layers);
     layoutNodes(graph, layers);
     var anchors = layoutEdges(graph, layers);
 
-    if (duration !== undefined && history.length > 0) {
-      ease = ease || 'cos';
-      var prevGraph = history.shift();
-      var prevAnchors = history.shift();
-      renderAnimation(prevGraph, graph, prevAnchors, anchors, duration, ease);
-    } else {
+    if (duration === undefined || history.length === 0) {
+      // render current state and clear history
       render(graph, anchors);
+      history = [graph, anchors];
+      playing = false;
+      return;
     }
 
-    var saveGraph = {};
-    for (var id in graph) {
-      if (graph[id].dummy === undefined) {
-        saveGraph[id] = graph[id];
-      }
-    }
-    history.push(saveGraph);
+    history.push(duration);
+    history.push(ease || 'cos');
+    history.push(graph);
     history.push(anchors);
+    play();
+  }
+
+  function play() {
+    if (!playing && history.length > 2) {
+      playing = true;
+      [prevGraph, prevAnchors, duration, ease] = history.splice(0, 4);
+      [graph, anchors] = history.slice(0, 2);
+
+      // copy graph so the origin one would not contain dummy nodes
+      var copyGraph = {};
+      for (var id in graph) {
+        copyGraph[id] = graph[id];
+      }
+
+      renderAnimation(prevGraph, copyGraph, prevAnchors, anchors, duration, ease);
+      setTimeout(function() {
+        playing = false;
+        play();
+      }, duration);
+    }
   }
 
   function buildDummyNodes(graph1, graph2) {
@@ -217,6 +226,8 @@ function d3graph (div, width, height, drawNode, drawEdge) {
   }
 
   function render(graph, anchors) {
+    svg.selectAll('*').remove();
+
     for (var id in edges) {
       var edge = edges[id];
       var srcNode = graph[edge.srcId];
@@ -233,6 +244,8 @@ function d3graph (div, width, height, drawNode, drawEdge) {
   }
 
   function renderAnimation(prevGraph, graph, prevAnchors, anchors, duration, ease) {
+    svg.selectAll('*').remove();
+
     buildDummyNodes(prevGraph, graph);
     buildDummyNodes(graph, prevGraph);
 
