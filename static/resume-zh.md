@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 # He Yi
 
  1987-03-09 | (+86)18868105691 | [heyi.pub@gmail.com](mailto:heyi.pub@gmail.com) | [yihe2.github.io](http://yihe2.github.io)

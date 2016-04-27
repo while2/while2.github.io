@@ -1,20 +1,24 @@
-## He Yi
+---
+layout: page
+---
+
+# He Yi
 
 1987-03-09 |  (+86)18868105691 | [heyi.pub@gmail.com](mailto:heyi.pub@gmail.com) | [yihe2.github.io](http://yihe2.github.io)
 
-#### Experience:
+## Experience:
 
 - 2015.5 – **now**        Sofeware Engineer at Bigdata Innovation Center of Creditease
 - 2012.4 – 2015.3    M.S. in State Key Lab of CAD&CG, Zhejiang University, China
 - 2009.6 – 2010.1    Sofeware Engineer in Virtuos Games, China
 - 2005.9 – 2009.6    B.S. in Software Engineering, Tongji University, China
 
-#### Skills:
+## Skills:
 
 - C++, Java, Hadoop, Spark, Python, Javascript.
 - Computer Vision and Image Processing
 
-#### Projects:
+## Projects:
 
 - Bigdata anti-fraud system
 
