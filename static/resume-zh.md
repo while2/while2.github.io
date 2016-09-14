@@ -4,7 +4,7 @@ layout: page
 
 # 何轶
 
- 1987-03-09 | (+86)18868105691 | [heyi.pub@gmail.com](mailto:heyi.pub@gmail.com) | [yihe2.github.io](http://yihe2.github.io)
+ 1987-03-09 | (+86)18868105691 | [heyi.pub@gmail.com](mailto:heyi.pub@gmail.com) | [while2.github.io](http://while2.github.io)
 
 ## 经历:
 
@@ -26,9 +26,9 @@ layout: page
 
   我的贡献：
 
-  1. 整合内部数据，统一格式。我设计了一套JSON之间的转换语法[json-cook](https://github.com/yihe2/json-cook)，以便用配置文件驱动Spark程序完成数据整合。并且支持自定义插件的方式嵌入原生Java代码，以完成复杂的数据清洗逻辑。
+  1. 整合内部数据，统一格式。我设计了一套JSON之间的转换语法[json-cook](https://github.com/while2/json-cook)，以便用配置文件驱动Spark程序完成数据整合。并且支持自定义插件的方式嵌入原生Java代码，以完成复杂的数据清洗逻辑。
   2. 信息检索的数据API。实现了基于MySQL的黑名单增删改查接口，维护基于Knowledge Graph的归户，查重接口。
-  3. 基于数据API，实现前端可视化，把借款人的关系网络以图的形式展现出来，并且支持交互的折叠/展开。之后把画图相关代码提炼成[d3graph](https://github.com/yihe2/d3graph)。
+  3. 基于数据API，实现前端可视化，把借款人的关系网络以图的形式展现出来，并且支持交互的折叠/展开。之后把画图相关代码提炼成[d3graph](https://github.com/while2/d3graph)。
 
 - 多视点全景拼接
 

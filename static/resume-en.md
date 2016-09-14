@@ -4,7 +4,7 @@ layout: page
 
 # He Yi
 
-1987-03-09 |  (+86)18868105691 | [heyi.pub@gmail.com](mailto:heyi.pub@gmail.com) | [yihe2.github.io](http://yihe2.github.io)
+1987-03-09 |  (+86)18868105691 | [heyi.pub@gmail.com](mailto:heyi.pub@gmail.com) | [while2.github.io](http://while2.github.io)
 
 ## Experience:
 
@@ -24,9 +24,9 @@ layout: page
 
   We integrate data from creditease product lines and crawlers, provide search, visualisation, auto-decision services. My contributions:
 
-  1. Integrate data from different systems. I designed [json-cook](https://github.com/yihe2/json-cook), a JSON transformation tool, so we can drive Spark programs with JSON configurations. With the plugin mechanism, native Java code can be "embeded" into JSON files to implement complicated cleaning logic.
+  1. Integrate data from different systems. I designed [json-cook](https://github.com/while2/json-cook), a JSON transformation tool, so we can drive Spark programs with JSON configurations. With the plugin mechanism, native Java code can be "embeded" into JSON files to implement complicated cleaning logic.
   2. Java Data service. Developed a MySQL-based blacklist API, maintains our Knowledge-Graph based search API.
-  3. Based on Data Services, I developed the graph search web page, to visualise the user relationship networks. The graph-related logic was abstracted as [d3graph](https://github.com/yihe2/d3graph).
+  3. Based on Data Services, I developed the graph search web page, to visualise the user relationship networks. The graph-related logic was abstracted as [d3graph](https://github.com/while2/d3graph).
 
 - Multi-viewpoint Panorama
 
@@ -34,4 +34,4 @@ layout: page
 
 - Image/Video Completion
 
-  A video completion algorithm based on my improvement for [image completion](http://yihe2.github.io/exemplar-based-completion), can fill large missing areas in a video clip. I designed a hierarchical approach to significantly improve the performance of Space-Time-Fusion. Implemented in C++, used in a stereo conversion system and a 3d photograph system for object removal.
+  A video completion algorithm based on my improvement for [image completion](http://while2.github.io/exemplar-based-completion), can fill large missing areas in a video clip. I designed a hierarchical approach to significantly improve the performance of Space-Time-Fusion. Implemented in C++, used in a stereo conversion system and a 3d photograph system for object removal.

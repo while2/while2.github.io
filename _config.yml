@@ -14,7 +14,7 @@ tagline: '// keep running'
 author :
   name : He Yi
   email : heyi.pub@gmail.com
-  github : yihe2
+  github : while2
 
 # The production_url is only used when full-domain names are needed
 # such as sitemap.txt
@@ -24,7 +24,7 @@ author :
 # Else if you are pushing to username.github.io, replace with your username.
 # Finally if you are pushing to a GitHub project page, include the project name at the end.
 #
-production_url : http://yihe2.github.io
+production_url : http://while2.github.io
 
 # All Jekyll-Bootstrap specific configurations are namespaced into this hash
 #
@@ -81,7 +81,7 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : yihe2
+      short_name : while2
     livefyre :
       site_id : 123
     intensedebate :
